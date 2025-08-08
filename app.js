@@ -431,4 +431,158 @@ function alertModal(message) {
   modalMessage.textContent = message;
   modalOkBtn.textContent = "حسناً";
   modalCancelBtn.classList.add("hidden");
-  modal
+  modalConfirmCallback = null;
+  modalOverlay.classList.remove("hidden");
+}
+
+modalOkBtn.addEventListener("click", () => {
+  modalOverlay.classList.add("hidden");
+  if (modalConfirmCallback) {
+    modalConfirmCallback();
+    modalConfirmCallback = null;
+  }
+});
+
+modalCancelBtn.addEventListener("click", () => {
+  modalOverlay.classList.add("hidden");
+  modalConfirmCallback = null;
+});
+
+// ==== التنقل بين الشاشات ====
+
+document.getElementById("btn-to-clients").addEventListener("click", () => {
+  renderClientsList();
+  showScreen("clients");
+});
+
+document.getElementById("btn-to-about").addEventListener("click", () => {
+  showScreen("about");
+});
+
+document.getElementById("btn-back-to-home-from-about").addEventListener("click", () => {
+  showScreen("home");
+});
+
+document.getElementById("btn-back-to-clients").addEventListener("click", () => {
+  showScreen("clients");
+});
+
+document.getElementById("btn-back-to-client-details-from-edit").addEventListener("click", () => {
+  editingTransactionId = null;
+  showScreen("clientDetails");
+});
+
+document.getElementById("btn-back-to-client-details-from-edit-name").addEventListener("click", () => {
+  showScreen("clientDetails");
+});
+
+// ==== أحداث نموذج إضافة عميل جديد ====
+
+document.getElementById("add-client-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const nameInput = document.getElementById("new-client-name");
+  const debtInput = document.getElementById("new-client-initial-debt");
+  const descInput = document.getElementById("new-client-initial-desc");
+
+  const name = nameInput.value.trim();
+  const debt = parseFloat(debtInput.value);
+  const desc = descInput.value.trim();
+
+  if (!name) {
+    alertModal("الرجاء إدخال اسم العميل.");
+    return;
+  }
+  if (debtInput.value && (isNaN(debt) || debt < 0)) {
+    alertModal("الرجاء إدخال قيمة دين صحيحة أو تركها فارغة.");
+    return;
+  }
+
+  const id = addClient(name, debt > 0 ? debt : 0, desc);
+  nameInput.value = "";
+  debtInput.value = "";
+  descInput.value = "";
+  selectedClientId = id;
+  renderClientDetails();
+  showScreen("clientDetails");
+});
+
+// ==== أحداث نموذج تعديل اسم العميل ====
+
+document.getElementById("edit-client-name-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const newNameInput = document.getElementById("edit-client-name-input");
+  const newName = newNameInput.value.trim();
+  if (!newName) {
+    alertModal("الرجاء إدخال اسم جديد صحيح.");
+    return;
+  }
+  if (!selectedClientId) return;
+
+  editClientName(selectedClientId, newName);
+  renderClientDetails();
+  renderClientsList();
+  showScreen("clientDetails");
+});
+
+// ==== أحداث نموذج إضافة معاملة جديدة ====
+
+document.getElementById("add-transaction-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const type = document.querySelector('input[name="transaction-type"]:checked').value;
+  const description = document.getElementById("transaction-desc").value.trim();
+  const amount = parseFloat(document.getElementById("transaction-amount").value);
+  const notes = document.getElementById("transaction-notes").value.trim();
+
+  if (!description) {
+    alertModal("الرجاء إدخال وصف المعاملة.");
+    return;
+  }
+  if (isNaN(amount) || amount <= 0) {
+    alertModal("الرجاء إدخال مبلغ صحيح أكبر من صفر.");
+    return;
+  }
+  if (!selectedClientId) return;
+
+  addTransaction(selectedClientId, type, description, amount, notes);
+  renderClientDetails();
+  document.getElementById("add-transaction-form").reset();
+  clearTotalDebt();
+});
+
+// ==== أحداث نموذج تعديل المعاملة ====
+
+document.getElementById("edit-transaction-form").addEventListener("submit", e => {
+  e.preventDefault();
+  saveEditedTransaction();
+});
+
+// ==== أحداث فلترة التواريخ ====
+
+document.getElementById("filter-from-date").addEventListener("change", () => {
+  applyFilterDates();
+  showTotalDebt();
+});
+
+document.getElementById("filter-to-date").addEventListener("change", () => {
+  applyFilterDates();
+  showTotalDebt();
+});
+
+// ==== زر تصدير CSV ====
+
+document.getElementById("export-csv-btn").addEventListener("click", () => {
+  exportTransactionsCSV();
+});
+
+// ==== تنظيف وإظهار اجمالي الدين ====
+
+function clearTotalDebt() {
+  document.getElementById("total-debt-display").textContent = "";
+}
+
+function initialize() {
+  showScreen("home");
+  clearTotalDebt();
+}
+
+initialize();
