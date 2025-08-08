@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الفوترة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Hide scrollbar for a cleaner look, but allow scrolling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+            border: 2px solid #f1f1f1; /* Makes the thumb appear thinner */
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Style for date input arrows on Chrome */
+        input[type="date"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 1; /* Ensure the calendar icon is visible */
+            cursor: pointer;
+            -webkit-filter: invert(1); /* Invert color for dark theme compatibility */
+            filter: invert(1);
+        }
+        /* Style for date input arrows on Firefox */
+        input[type="date"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script src="https://www.gstatic.com/react/16.13.1/umd/react.development.js" crossorigin></script>
+    <script src="https://www.gstatic.com/react-dom/16.13.1/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://www.gstatic.com/babel/5.8.38/browser.min.js" crossorigin></script>
+
+    <script type="text/babel" src="app.js"></script>
+
+</body>
+</html>
