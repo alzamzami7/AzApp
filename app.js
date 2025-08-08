@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'https://cdn.skypack.dev/react@17.0.2';
+import ReactDOM from 'https://cdn.skypack.dev/react-dom@17.0.2';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
 import {
   getAuth,
@@ -22,27 +23,26 @@ import {
   serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-// **ملاحظة هامة للنشر على GitHub:**
-// تم استبدال إعدادات Firebase الثابتة بمتغيرات بيئة.
-// يجب عليك إعداد هذه المتغيرات في خدمة الاستضافة التي ستستخدمها
-// (مثل Netlify أو Vercel) في لوحة التحكم الخاصة بها.
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID
+  apiKey: 'AIzaSyCJaDmcFayuU1b4fOP14KKQHN12jrjJxD8',
+  authDomain: 'azapp-8b4a0.firebaseapp.com',
+  projectId: 'azapp-8b4a0',
+  storageBucket: 'azapp-8b4a0.firebasestorage.app',
+  messagingSenderId: '279004422830',
+  appId: '1:279004422830:web:432cc4bd1d60c3cbb3033f',
 };
 
-// initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// --- Custom Modal Components ---
+// ... (Your existing code from app.js goes here)
 
-// Info Modal
+// Your React component code will follow here.
+// I will not rewrite the full code for brevity, but you should paste the
+// full content of the previous `app.js` file here after the firebase config.
+// The main change is at the top with the `import` statements.
+
 const Modal = ({ message, onClose }) => (
   <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 p-4" dir="rtl">
     <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
@@ -56,8 +56,6 @@ const Modal = ({ message, onClose }) => (
     </div>
   </div>
 );
-
-// Confirmation Modal
 const ConfirmModal = ({ message, onConfirm, onCancel }) => (
   <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 p-4" dir="rtl">
     <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
@@ -79,8 +77,6 @@ const ConfirmModal = ({ message, onConfirm, onCancel }) => (
     </div>
   </div>
 );
-
-// About Modal
 const AboutModal = ({ show, onClose }) => {
   if (!show) return null;
   return (
@@ -102,11 +98,8 @@ const AboutModal = ({ show, onClose }) => {
     </div>
   );
 };
-
-// Add Customer Modal
 const AddCustomerModal = ({ show, onClose, onAddCustomer, newCustomerName, setNewCustomerName, initialDebtAmount, setInitialDebtAmount, initialDebtDescription, setInitialDebtDescription, isSubmitting }) => {
   if (!show) return null;
-
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50" dir="rtl">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition-all scale-100 opacity-100">
@@ -172,11 +165,8 @@ const AddCustomerModal = ({ show, onClose, onAddCustomer, newCustomerName, setNe
     </div>
   );
 };
-
-// Edit Customer Name Modal Component
 const EditCustomerNameModal = ({ show, onClose, onSave, currentName, setEditedName, isSubmitting }) => {
   if (!show) return null;
-
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50" dir="rtl">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition-all scale-100 opacity-100">
@@ -216,15 +206,10 @@ const EditCustomerNameModal = ({ show, onClose, onSave, currentName, setEditedNa
     </div>
   );
 };
-
-
-// --- Authentication Components ---
-
 const AuthScreen = ({ onLogin, onRegister, isSubmitting }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isRegistering) {
@@ -233,7 +218,6 @@ const AuthScreen = ({ onLogin, onRegister, isSubmitting }) => {
       onLogin(email, password);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 p-4" dir="rtl">
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm text-center transform transition-all duration-300 hover:scale-105">
@@ -282,17 +266,11 @@ const AuthScreen = ({ onLogin, onRegister, isSubmitting }) => {
     </div>
   );
 };
-
-// --- Admin Panel Component ---
-
 const AdminPanel = ({ db, userId, showInfoModal, setView, isSubmitting, setIsSubmitting }) => {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [approvedUsers, setApprovedUsers] = useState([]);
-
-  // Fetch all users from the 'users' collection
   useEffect(() => {
     if (!db || !userId) return;
-
     const usersCollectionRef = collection(db, 'users');
     const unsubscribe = onSnapshot(usersCollectionRef, (snapshot) => {
       const usersList = snapshot.docs.map(doc => ({
@@ -305,17 +283,15 @@ const AdminPanel = ({ db, userId, showInfoModal, setView, isSubmitting, setIsSub
       console.error("Error fetching users for admin panel:", error);
       showInfoModal(`خطأ في جلب المستخدمين: ${error.message}`);
     });
-
     return () => unsubscribe();
   }, [db, userId, showInfoModal]);
-
   const handleApproveUser = async (userToApproveId, userEmail) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
       await updateDoc(doc(db, 'users', userToApproveId), {
         approved: true,
-        approvedBy: userId, // Record who approved
+        approvedBy: userId,
         approvedAt: serverTimestamp()
       });
       showInfoModal(`تمت الموافقة على المستخدم ${userEmail} بنجاح.`);
@@ -326,7 +302,6 @@ const AdminPanel = ({ db, userId, showInfoModal, setView, isSubmitting, setIsSub
       setIsSubmitting(false);
     }
   };
-
   return (
     <div dir="rtl" className="p-4 flex flex-col items-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
       <div className="bg-white p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-sm sm:max-w-md border border-gray-200">
@@ -337,9 +312,8 @@ const AdminPanel = ({ db, userId, showInfoModal, setView, isSubmitting, setIsSub
             </svg>
           </button>
           <h2 className="text-2xl font-bold text-gray-800">لوحة تحكم المدير</h2>
-          <div></div> {/* Placeholder for alignment */}
+          <div></div>
         </div>
-
         <h3 className="text-xl font-semibold text-gray-700 mb-4">المستخدمون بانتظار الموافقة ({pendingUsers.length})</h3>
         {pendingUsers.length === 0 ? (
           <p className="text-center text-gray-500 py-4">لا يوجد مستخدمون بانتظار الموافقة.</p>
@@ -359,7 +333,6 @@ const AdminPanel = ({ db, userId, showInfoModal, setView, isSubmitting, setIsSub
             ))}
           </ul>
         )}
-
         <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-6 border-t pt-4">المستخدمون الموافق عليهم ({approvedUsers.length})</h3>
         {approvedUsers.length === 0 ? (
           <p className="text-center text-gray-500 py-4">لا يوجد مستخدمون موافق عليهم.</p>
@@ -368,7 +341,6 @@ const AdminPanel = ({ db, userId, showInfoModal, setView, isSubmitting, setIsSub
             {approvedUsers.map(user => (
               <li key={user.id} className="flex items-center justify-between bg-blue-50 p-3 rounded-lg shadow-sm border border-blue-100">
                 <span className="text-gray-800 font-medium">{user.email} {user.isAdmin && <span className="text-purple-600 font-semibold">(مدير)</span>}</span>
-                {/* Could add options to revoke access or change role here if needed */}
               </li>
             ))}
           </ul>
@@ -377,10 +349,6 @@ const AdminPanel = ({ db, userId, showInfoModal, setView, isSubmitting, setIsSub
     </div>
   );
 };
-
-
-// --- Main Interface Component ---
-
 const MainInterface = ({
   newCustomerName, setNewCustomerName,
   newPurchaseDetails, setNewPurchaseDetails,
@@ -394,8 +362,8 @@ const MainInterface = ({
   isSubmitting,
   customers,
   setShowAboutModal,
-  isAdmin, // Pass isAdmin prop
-  handleSignOut // Pass signOut function
+  isAdmin,
+  handleSignOut
 }) => (
   <div dir="rtl" className="p-4 flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-purple-100">
     <div className="bg-white p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-sm sm:max-w-md border border-gray-200">
@@ -527,8 +495,6 @@ const MainInterface = ({
     </button>
   </div>
 );
-
-// Customer List Interface Component
 const CustomerListInterface = ({
   setView,
   searchTerm, setSearchTerm,
@@ -556,7 +522,6 @@ const CustomerListInterface = ({
           إضافة عميل
         </button>
       </div>
-
       <div className="mb-4">
         <input
           type="text"
@@ -567,7 +532,6 @@ const CustomerListInterface = ({
           disabled={isSubmitting}
         />
       </div>
-
       {customers.length === 0 ? (
         <p className="text-center text-gray-500 py-8">لا يوجد عملاء مسجلين أو لا توجد نتائج للبحث.</p>
       ) : (
@@ -596,8 +560,6 @@ const CustomerListInterface = ({
     </div>
   </div>
 );
-
-// Customer Detail Interface Component
 const CustomerDetailInterface = ({
   setView,
   selectedCustomer,
@@ -635,8 +597,6 @@ const CustomerDetailInterface = ({
           تعديل الاسم
         </button>
       </div>
-
-      {/* Date Filter */}
       <div className="mb-4 p-3 bg-gray-50 rounded-lg shadow-inner">
         <label className="block text-gray-700 text-sm font-semibold mb-2">تصفية حسب التاريخ:</label>
         <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
@@ -658,7 +618,6 @@ const CustomerDetailInterface = ({
           />
         </div>
       </div>
-
       {filteredTransactions.length === 0 ? (
         <p className="text-center text-gray-500 py-8">لا توجد معاملات لهذا العميل أو لا توجد نتائج للتصفية.</p>
       ) : (
@@ -671,7 +630,6 @@ const CustomerDetailInterface = ({
               }`}
             >
               {editingTransactionId === transaction.id ? (
-                // Edit mode for transaction
                 <div className="flex flex-col space-y-2">
                   <input
                     type="text"
@@ -707,7 +665,6 @@ const CustomerDetailInterface = ({
                   </div>
                 </div>
               ) : (
-                // Display mode for transaction
                 <>
                   <p className="text-gray-800 font-semibold">{transaction.details}</p>
                   <p className={`font-bold text-lg mt-1 ${transaction.type === 'payment' ? 'text-green-700' : 'text-red-700'}`}>
@@ -717,7 +674,6 @@ const CustomerDetailInterface = ({
                   <p className="text-gray-500 text-xs mt-2">
                     {transaction.timestamp ? new Date(transaction.timestamp.toDate()).toLocaleString('ar-EG') : 'جارٍ التحميل...'}
                   </p>
-                  {/* Moved buttons to left-2 */}
                   <div className="absolute top-2 left-2 flex space-x-1 rtl:space-x-reverse">
                     <button
                       onClick={() => startEditingTransaction(transaction)}
@@ -746,7 +702,6 @@ const CustomerDetailInterface = ({
           ))}
         </div>
       )}
-
       <div className="mt-6 flex flex-col space-y-3">
         <div className="text-center text-2xl font-bold">
           <span className="text-gray-700">إجمالي الدين: </span>
@@ -766,37 +721,28 @@ const CustomerDetailInterface = ({
           تصدير إلى CSV
         </button>
       </div>
-
     </div>
   </div>
 );
-
-// Main Application Component
 const App = () => {
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
   const [isApproved, setIsApproved] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [view, setView] = useState('auth'); // auth, main, customerList, customerDetail, adminPanel
+  const [view, setView] = useState('auth');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customers, setCustomers] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Form states for new transaction
   const [newCustomerName, setNewCustomerName] = useState('');
   const [newPurchaseDetails, setNewPurchaseDetails] = useState('');
   const [newPurchaseValue, setNewPurchaseValue] = useState('');
   const [newNotes, setNewNotes] = useState('');
-  const [newTransactionType, setNewTransactionType] = useState('purchase'); // 'purchase' or 'payment'
-
-  // State for search and filter
+  const [newTransactionType, setNewTransactionType] = useState('purchase');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStartDate, setFilterStartDate] = useState('');
   const [filterEndDate, setFilterEndDate] = useState('');
-
-  // Modal states
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoModalMessage, setInfoModalMessage] = useState('');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -806,13 +752,9 @@ const App = () => {
   const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
   const [showEditCustomerNameModal, setShowEditCustomerNameModal] = useState(false);
   const [editedCustomerName, setEditedCustomerName] = useState('');
-
-  // Edit transaction states
   const [editingTransactionId, setEditingTransactionId] = useState(null);
   const [editPurchaseDetails, setEditPurchaseDetails] = useState('');
   const [editPurchaseValue, setEditPurchaseValue] = useState('');
-
-  // Handle Firebase Auth State Changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
@@ -830,7 +772,6 @@ const App = () => {
             } else {
               setInfoModalMessage('حسابك قيد المراجعة. سيتم إشعارك عند الموافقة عليه.');
               setShowInfoModal(true);
-              // Stay on auth screen
             }
           } else {
             setInfoModalMessage('بيانات المستخدم غير موجودة. يرجى التواصل مع الدعم.');
@@ -852,8 +793,6 @@ const App = () => {
     });
     return () => unsubscribe();
   }, []);
-
-  // Fetch customers data
   useEffect(() => {
     if (user && isApproved) {
       const unsubscribe = onSnapshot(collection(db, `users/${userId}/customers`), (snapshot) => {
@@ -870,17 +809,14 @@ const App = () => {
       return () => unsubscribe();
     }
   }, [user, isApproved, userId]);
-
-  // Fetch transactions data for selected customer
   useEffect(() => {
     if (user && selectedCustomer) {
       const unsubscribe = onSnapshot(collection(db, `users/${userId}/customers/${selectedCustomer.id}/transactions`), (snapshot) => {
         const transactionsList = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
-          timestamp: doc.data().timestamp // Keep the timestamp object for sorting
+          timestamp: doc.data().timestamp
         }));
-        // Sort transactions by timestamp descending
         transactionsList.sort((a, b) => b.timestamp - a.timestamp);
         setTransactions(transactionsList);
       }, (error) => {
@@ -891,8 +827,6 @@ const App = () => {
       return () => unsubscribe();
     }
   }, [user, userId, selectedCustomer]);
-
-  // Filter transactions based on date range
   useEffect(() => {
     let tempTransactions = [...transactions];
     if (filterStartDate) {
@@ -901,21 +835,17 @@ const App = () => {
     }
     if (filterEndDate) {
       const end = new Date(filterEndDate);
-      end.setDate(end.getDate() + 1); // Include the end date
+      end.setDate(end.getDate() + 1);
       tempTransactions = tempTransactions.filter(t => t.timestamp && t.timestamp.toDate() < end);
     }
     setFilteredTransactions(tempTransactions);
   }, [transactions, filterStartDate, filterEndDate]);
-
-
-  // Authentication Functions
   const handleLogin = async (email, password) => {
     setIsSubmitting(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setInfoModalMessage('تم تسجيل الدخول بنجاح!');
       setShowInfoModal(true);
-      // Auth state change listener will handle view change
     } catch (error) {
       console.error("Error logging in:", error);
       setInfoModalMessage(`خطأ في تسجيل الدخول: ${error.message}`);
@@ -924,12 +854,10 @@ const App = () => {
       setIsSubmitting(false);
     }
   };
-
   const handleRegister = async (email, password) => {
     setIsSubmitting(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      // Add user to 'users' collection with approved: false
       const userDocRef = doc(db, 'users', userCredential.user.uid);
       await setDoc(userDocRef, {
         email: email,
@@ -939,7 +867,7 @@ const App = () => {
       });
       setInfoModalMessage('تم إنشاء الحساب بنجاح. يرجى الانتظار حتى يوافق المدير على حسابك.');
       setShowInfoModal(true);
-      await signOut(auth); // Force sign out to wait for approval
+      await signOut(auth);
     } catch (error) {
       console.error("Error registering:", error);
       setInfoModalMessage(`خطأ في إنشاء الحساب: ${error.message}`);
@@ -948,7 +876,6 @@ const App = () => {
       setIsSubmitting(false);
     }
   };
-
   const handleSignOut = async () => {
     setIsSubmitting(true);
     try {
@@ -963,21 +890,17 @@ const App = () => {
       setIsSubmitting(false);
     }
   };
-
   const handleAddTransaction = useCallback(async () => {
     if (isSubmitting) return;
-
     if (!newCustomerName || !newPurchaseValue) {
       setInfoModalMessage('يرجى إدخال اسم العميل والقيمة.');
       setShowInfoModal(true);
       return;
     }
     setIsSubmitting(true);
-
     try {
       const customerDocRef = doc(db, `users/${userId}/customers/${newCustomerName}`);
       const transactionCollectionRef = collection(db, `users/${userId}/customers/${newCustomerName}/transactions`);
-
       const newTransaction = {
         details: newPurchaseDetails,
         value: parseFloat(newPurchaseValue),
@@ -985,28 +908,22 @@ const App = () => {
         notes: newNotes,
         timestamp: serverTimestamp()
       };
-
-      // Check if customer exists, if not, create it
       const customersRef = collection(db, `users/${userId}/customers`);
       const q = query(customersRef, where('name', '==', newCustomerName));
       const querySnapshot = await getDocs(q);
-
       if (querySnapshot.empty) {
-        // Customer does not exist, create it
         const newCustomerDocRef = doc(customersRef);
         await setDoc(newCustomerDocRef, {
           name: newCustomerName,
           createdAt: serverTimestamp()
         });
         await addDoc(collection(newCustomerDocRef, 'transactions'), newTransaction);
-        setSelectedCustomer({ id: newCustomerDocRef.id, name: newCustomerName }); // Select the new customer
+        setSelectedCustomer({ id: newCustomerDocRef.id, name: newCustomerName });
       } else {
-        // Customer exists, add transaction to their document
         const existingCustomerDocRef = querySnapshot.docs[0].ref;
         await addDoc(collection(existingCustomerDocRef, 'transactions'), newTransaction);
-        setSelectedCustomer({ id: existingCustomerDocRef.id, name: newCustomerName }); // Select the existing customer
+        setSelectedCustomer({ id: existingCustomerDocRef.id, name: newCustomerName });
       }
-
       setInfoModalMessage('تم تسجيل المعاملة بنجاح!');
       setShowInfoModal(true);
       setNewCustomerName('');
@@ -1022,39 +939,31 @@ const App = () => {
       setIsSubmitting(false);
     }
   }, [newCustomerName, newPurchaseValue, newPurchaseDetails, newNotes, newTransactionType, userId, db, isSubmitting]);
-
-
   const handleAddCustomer = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
-
     const customersRef = collection(db, `users/${userId}/customers`);
     const newCustomerName = document.getElementById('modalCustomerName').value;
     const initialDebtAmount = parseFloat(document.getElementById('modalInitialDebtAmount').value) || 0;
     const initialDebtDescription = document.getElementById('modalInitialDebtDescription').value || '';
-
     if (!newCustomerName) {
       setInfoModalMessage('يرجى إدخال اسم العميل.');
       setShowInfoModal(true);
       setIsSubmitting(false);
       return;
     }
-
     try {
       const q = query(customersRef, where('name', '==', newCustomerName));
       const querySnapshot = await getDocs(q);
-
       if (!querySnapshot.empty) {
         setInfoModalMessage('هذا العميل موجود بالفعل.');
         setShowInfoModal(true);
         return;
       }
-
       const newCustomerDocRef = await addDoc(customersRef, {
         name: newCustomerName,
         createdAt: serverTimestamp()
       });
-
       if (initialDebtAmount > 0) {
         const initialTransaction = {
           details: initialDebtDescription || 'دين مبدئي',
@@ -1064,7 +973,6 @@ const App = () => {
         };
         await addDoc(collection(newCustomerDocRef, 'transactions'), initialTransaction);
       }
-
       setInfoModalMessage('تم إضافة العميل بنجاح!');
       setShowInfoModal(true);
       setShowAddCustomerModal(false);
@@ -1076,21 +984,16 @@ const App = () => {
       setIsSubmitting(false);
     }
   };
-
-
   const handleDeleteCustomer = (customerId) => {
     setConfirmModalMessage('هل أنت متأكد من حذف هذا العميل وجميع معاملاته؟');
     setShowConfirmModal(true);
     setOnConfirmAction(async () => {
       setIsSubmitting(true);
       try {
-        // Delete all transactions first
         const transactionsRef = collection(db, `users/${userId}/customers/${customerId}/transactions`);
         const transactionsSnapshot = await getDocs(transactionsRef);
         const deletePromises = transactionsSnapshot.docs.map(doc => deleteDoc(doc.ref));
         await Promise.all(deletePromises);
-
-        // Then delete the customer document
         const customerDocRef = doc(db, `users/${userId}/customers`, customerId);
         await deleteDoc(customerDocRef);
         setInfoModalMessage('تم حذف العميل بنجاح.');
@@ -1105,7 +1008,6 @@ const App = () => {
       }
     });
   };
-
   const handleDeleteTransaction = (transactionId) => {
     setConfirmModalMessage('هل أنت متأكد من حذف هذه المعاملة؟');
     setShowConfirmModal(true);
@@ -1126,17 +1028,14 @@ const App = () => {
       }
     });
   };
-  
   const startEditingTransaction = (transaction) => {
     setEditingTransactionId(transaction.id);
     setEditPurchaseDetails(transaction.details);
     setEditPurchaseValue(transaction.value);
   };
-
   const saveEditedTransaction = async (transactionId) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
-  
     try {
       const transactionDocRef = doc(db, `users/${userId}/customers/${selectedCustomer.id}/transactions`, transactionId);
       await updateDoc(transactionDocRef, {
@@ -1154,18 +1053,15 @@ const App = () => {
       setIsSubmitting(false);
     }
   };
-
   const handleEditCustomerName = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
-  
     if (!editedCustomerName) {
       setInfoModalMessage('لا يمكن أن يكون اسم العميل فارغاً.');
       setShowInfoModal(true);
       setIsSubmitting(false);
       return;
     }
-  
     try {
       const customerDocRef = doc(db, `users/${userId}/customers`, selectedCustomer.id);
       await updateDoc(customerDocRef, {
@@ -1182,7 +1078,6 @@ const App = () => {
       setIsSubmitting(false);
     }
   };
-
   const calculateTotalDebt = () => {
     return transactions.reduce((total, transaction) => {
       const value = transaction.value;
@@ -1194,12 +1089,11 @@ const App = () => {
       return total;
     }, 0);
   };
-
   const handleExport = () => {
     const header = ['التاريخ', 'التفاصيل', 'القيمة', 'النوع', 'الملاحظات'].join(',');
     const rows = filteredTransactions.map(t => {
       const date = t.timestamp ? new Date(t.timestamp.toDate()).toLocaleString('ar-EG') : '';
-      const details = `"${t.details.replace(/"/g, '""')}"`; // Handle commas in details
+      const details = `"${t.details.replace(/"/g, '""')}"`;
       const value = t.value?.toFixed(2);
       const type = t.type === 'purchase' ? 'شراء' : 'دفع';
       const notes = `"${t.notes?.replace(/"/g, '""') || ''}"`;
@@ -1220,8 +1114,6 @@ const App = () => {
     setInfoModalMessage('تم تصدير المعاملات بنجاح!');
     setShowInfoModal(true);
   };
-
-  // Render different views based on state
   switch (view) {
     case 'auth':
       return <AuthScreen onLogin={handleLogin} onRegister={handleRegister} isSubmitting={isSubmitting} />;
@@ -1327,7 +1219,4 @@ const App = () => {
       return null;
   }
 };
-
-// Render App component
-ReactDOM.render(<App />, document.getElementById('root'));
-
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('root'));
