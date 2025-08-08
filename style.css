@@ -1,0 +1,406 @@
+/* إعدادات عامة */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fefefe;
+  color: #222;
+  margin: 0;
+  padding: 0;
+  direction: rtl;
+}
+
+header {
+  background-color: #3a86ff;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+nav button {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+nav button:hover,
+nav button.active {
+  background-color: white;
+  color: #3a86ff;
+}
+
+main {
+  max-width: 700px;
+  margin: 1rem auto 3rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgb(0 0 0 / 0.1);
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+h2 {
+  margin-top: 0;
+  text-align: center;
+  color: #3a86ff;
+  font-weight: 700;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #444;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+  margin-top: 0.3rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1.5px solid #ccc;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+  border-color: #3a86ff;
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 50px;
+  max-height: 120px;
+}
+
+button {
+  background-color: #3a86ff;
+  border: none;
+  color: white;
+  font-weight: 700;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  border-radius: 7px;
+  transition: background-color 0.3s ease;
+  font-size: 1.1rem;
+}
+
+button:hover {
+  background-color: #265bcf;
+}
+
+button.primary-btn {
+  background-color: #3a86ff;
+}
+
+button.primary-btn:hover {
+  background-color: #265bcf;
+}
+
+button.secondary-btn {
+  background-color: #ffbe0b;
+  color: #222;
+}
+
+button.secondary-btn:hover {
+  background-color: #e6a800;
+}
+
+button.danger-btn {
+  background-color: #ef476f;
+}
+
+button.danger-btn:hover {
+  background-color: #c3305a;
+}
+
+button.small-btn {
+  background-color: #ffb703;
+  color: #222;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.7rem;
+  margin-left: 0.5rem;
+}
+
+button.small-btn:hover {
+  background-color: #cc8f03;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #3a86ff;
+  margin-bottom: 1rem;
+}
+
+.back-btn:hover {
+  color: #265bcf;
+}
+
+input[type="radio"] {
+  margin-left: 0.3rem;
+  cursor: pointer;
+}
+
+fieldset {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+fieldset legend {
+  font-weight: 700;
+  padding: 0 0.5rem;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+li {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  cursor: default;
+}
+
+li:hover {
+  background-color: #f0f8ff;
+}
+
+.client-name {
+  cursor: pointer;
+  flex-grow: 1;
+  color: #3a86ff;
+}
+
+.client-name:hover {
+  text-decoration: underline;
+}
+
+.delete-client {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #ef476f;
+  margin-left: 0.5rem;
+}
+
+.delete-client:hover {
+  color: #c3305a;
+}
+
+.transaction-desc,
+.transaction-date,
+.transaction-amount,
+.transaction-notes,
+.transaction-actions {
+  margin: 0 0.5rem;
+  font-weight: 500;
+}
+
+.transaction-desc {
+  flex-grow: 3;
+  min-width: 150px;
+}
+
+.transaction-date {
+  flex-grow: 1;
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.transaction-amount {
+  flex-grow: 1;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+  min-width: 80px;
+}
+
+.transaction-type-purchase {
+  color: #ef476f;
+}
+
+.transaction-type-payment {
+  color: #06d6a0;
+}
+
+.transaction-notes {
+  flex-grow: 2;
+  font-size: 0.9rem;
+  color: #777;
+  font-style: italic;
+}
+
+.transaction-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 0.4rem;
+  color: #3a86ff;
+}
+
+.transaction-actions button:hover {
+  color: #265bcf;
+}
+
+.filter-dates {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-dates label {
+  flex-grow: 1;
+  min-width: 150px;
+}
+
+.client-actions {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+#total-debt-display {
+  font-weight: 700;
+  margin-top: 1rem;
+  font-size: 1.3rem;
+  color: #ef476f;
+}
+
+/* النافذة المنبثقة */
+#modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#modal {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  max-width: 90%;
+  max-height: 80%;
+  overflow-y: auto;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+#modal-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#modal-buttons button {
+  min-width: 80px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* مؤشر التحميل */
+#loading-indicator {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #3a86ff;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 700;
+  z-index: 10000;
+  user-select: none;
+  font-size: 1rem;
+}
+
+/* متجاوب */
+@media (max-width: 480px) {
+  main {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+
+  nav {
+    flex-direction: column;
+  }
+
+  nav button {
+    width: 100%;
+  }
+
+  .filter-dates {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .transaction-desc {
+    min-width: 100px;
+  }
+}
