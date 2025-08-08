@@ -24,24 +24,17 @@ import {
 } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCJaDmcFayuU1b4fOP14KKQHN12jrjJxD8',
-  authDomain: 'azapp-8b4a0.firebaseapp.com',
-  projectId: 'azapp-8b4a0',
-  storageBucket: 'azapp-8b4a0.firebasestorage.app',
-  messagingSenderId: '279004422830',
-  appId: '1:279004422830:web:432cc4bd1d60c3cbb3033f',
+  apiKey: "AIzaSyCJaDmcFayuU1b4fOP14KKQHN12jrjJxD8",
+  authDomain: "azapp-8b4a0.firebaseapp.com",
+  projectId: "azapp-8b4a0",
+  storageBucket: "azapp-8b4a0.firebasestorage.app",
+  messagingSenderId: "279004422830",
+  appId: "1:279004422830:web:432cc4bd1d60c3cbb3033f"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-// ... (Your existing code from app.js goes here)
-
-// Your React component code will follow here.
-// I will not rewrite the full code for brevity, but you should paste the
-// full content of the previous `app.js` file here after the firebase config.
-// The main change is at the top with the `import` statements.
 
 const Modal = ({ message, onClose }) => (
   <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 p-4" dir="rtl">
