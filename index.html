@@ -1,19 +1,186 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الفواتير</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap');
-        body {
-            font-family: 'Tajawal', sans-serif;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>نظام الفوترة وإدارة الديون</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="root"></div>
-    <script type="module" src="app.js"></script>
+
+<header>
+  <h1>نظام الفوترة وإدارة الديون</h1>
+  <nav>
+    <button id="btn-home" class="active">الرئيسية</button>
+    <button id="btn-clients">قائمة العملاء</button>
+    <button id="btn-about">عن التطبيق</button>
+  </nav>
+</header>
+
+<main>
+  <!-- الشاشة الرئيسية -->
+  <section id="home-screen" class="screen active">
+    <h2>تسجيل معاملة جديدة</h2>
+    <form id="transaction-form">
+      <label>اسم العميل:
+        <input list="clients-list" id="client-name" name="client-name" autocomplete="off" required />
+        <datalist id="clients-list"></datalist>
+      </label>
+
+      <label>تفاصيل المعاملة:
+        <input type="text" id="transaction-desc" name="transaction-desc" required />
+      </label>
+
+      <label>القيمة:
+        <input type="number" step="0.01" id="transaction-amount" name="transaction-amount" required min="0.01" />
+      </label>
+
+      <fieldset>
+        <legend>نوع المعاملة:</legend>
+        <label><input type="radio" name="transaction-type" value="purchase" checked /> شراء (دين)</label>
+        <label><input type="radio" name="transaction-type" value="payment" /> دفع (تسديد)</label>
+      </fieldset>
+
+      <label>ملاحظات (اختياري):
+        <textarea id="transaction-notes" name="transaction-notes" rows="2"></textarea>
+      </label>
+
+      <button type="submit">إرسال المعاملة</button>
+    </form>
+    <p class="user-id-display">معرف المستخدم: <span id="user-id"></span></p>
+  </section>
+
+  <!-- شاشة قائمة العملاء -->
+  <section id="clients-screen" class="screen">
+    <h2>قائمة العملاء</h2>
+    <input type="search" id="client-search" placeholder="ابحث عن عميل..." />
+    <ul id="clients-list-container"></ul>
+    <button id="add-client-btn" class="primary-btn">+ إضافة عميل جديد</button>
+  </section>
+
+  <!-- شاشة تفاصيل العميل -->
+  <section id="client-details-screen" class="screen">
+    <header>
+      <button id="back-to-clients" class="back-btn">← رجوع</button>
+      <h2 id="client-details-name"></h2>
+      <button id="edit-client-name-btn" class="small-btn">تعديل الاسم</button>
+      <button id="delete-client-btn" class="danger-btn">حذف العميل</button>
+    </header>
+
+    <section class="filter-dates">
+      <label>من تاريخ:
+        <input type="date" id="filter-from-date" />
+      </label>
+      <label>إلى تاريخ:
+        <input type="date" id="filter-to-date" />
+      </label>
+      <button id="filter-apply-btn">تطبيق الفلتر</button>
+      <button id="filter-clear-btn">مسح الفلاتر</button>
+    </section>
+
+    <ul id="transactions-list"></ul>
+
+    <form id="add-transaction-to-client-form">
+      <h3>إضافة معاملة جديدة</h3>
+      <label>تفاصيل المعاملة:
+        <input type="text" id="transaction-desc-client" required />
+      </label>
+      <label>القيمة:
+        <input type="number" step="0.01" id="transaction-amount-client" required min="0.01" />
+      </label>
+      <label>نوع المعاملة:
+        <select id="transaction-type-client">
+          <option value="purchase">شراء (دين)</option>
+          <option value="payment">دفع (تسديد)</option>
+        </select>
+      </label>
+      <label>ملاحظات (اختياري):
+        <textarea id="transaction-notes-client" rows="2"></textarea>
+      </label>
+      <button type="submit">إضافة معاملة</button>
+    </form>
+
+    <section class="client-actions">
+      <button id="calculate-total-btn" class="primary-btn">حساب إجمالي الدين</button>
+      <button id="export-csv-btn" class="secondary-btn">تصدير البيانات CSV</button>
+      <p id="total-debt-display"></p>
+    </section>
+  </section>
+
+  <!-- شاشة تعديل اسم العميل -->
+  <section id="edit-client-name-screen" class="screen">
+    <h2>تعديل اسم العميل</h2>
+    <form id="edit-client-name-form">
+      <input type="text" id="edit-client-name-input" required />
+      <button type="submit">حفظ</button>
+      <button type="button" id="cancel-edit-client-name">إلغاء</button>
+    </form>
+  </section>
+
+  <!-- شاشة تعديل المعاملة -->
+  <section id="edit-transaction-screen" class="screen">
+    <h2>تعديل المعاملة</h2>
+    <form id="edit-transaction-form">
+      <label>تفاصيل المعاملة:
+        <input type="text" id="edit-transaction-desc" required />
+      </label>
+      <label>القيمة:
+        <input type="number" step="0.01" id="edit-transaction-amount" required min="0.01" />
+      </label>
+      <label>نوع المعاملة:
+        <select id="edit-transaction-type">
+          <option value="purchase">شراء (دين)</option>
+          <option value="payment">دفع (تسديد)</option>
+        </select>
+      </label>
+      <label>ملاحظات (اختياري):
+        <textarea id="edit-transaction-notes" rows="2"></textarea>
+      </label>
+      <button type="submit">حفظ التعديلات</button>
+      <button type="button" id="cancel-edit-transaction">إلغاء</button>
+    </form>
+  </section>
+
+  <!-- شاشة إضافة عميل جديد -->
+  <section id="add-client-screen" class="screen">
+    <h2>إضافة عميل جديد</h2>
+    <form id="add-client-form">
+      <label>اسم العميل:
+        <input type="text" id="new-client-name" required />
+      </label>
+      <label>مبلغ الدين المبدئي (اختياري):
+        <input type="number" step="0.01" id="new-client-initial-debt" min="0" />
+      </label>
+      <label>وصف الدين المبدئي (اختياري):
+        <input type="text" id="new-client-initial-desc" />
+      </label>
+      <button type="submit">إضافة العميل</button>
+      <button type="button" id="cancel-add-client">إلغاء</button>
+    </form>
+  </section>
+
+  <!-- شاشة عن التطبيق -->
+  <section id="about-screen" class="screen">
+    <h2>عن التطبيق والمصمم</h2>
+    <p>تم تصميم هذا التطبيق من قبل عبدالله الزمزمي لمساعدتك على إدارة الفواتير والديون بسهولة.</p>
+    <button id="close-about-btn">إغلاق</button>
+  </section>
+</main>
+
+<!-- نافذة منبثقة مخصصة -->
+<div id="modal-overlay" class="hidden">
+  <div id="modal">
+    <p id="modal-message"></p>
+    <div id="modal-buttons">
+      <button id="modal-ok-btn">حسناً</button>
+      <button id="modal-cancel-btn" class="hidden">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- مؤشر تحميل -->
+<div id="loading-indicator" class="hidden">... جاري التحميل</div>
+
+<script src="app.js"></script>
 </body>
 </html>
