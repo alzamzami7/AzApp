@@ -5,51 +5,72 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>نظام الفوترة وإدارة الديون</title>
 <style>
+  :root {
+    --primary-color: #004aad;
+    --secondary-color: #003080;
+    --bg-color: #f0f2f5;
+    --card-bg: white;
+    --text-color: #222;
+    --shadow-light: 0 0 5px rgba(0,0,0,0.1);
+    --shadow-medium: 0 4px 15px rgba(0,0,0,0.2);
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+  }
   body {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     margin: 0; padding: 0;
-    background: #f0f2f5;
-    color: #222;
+    background: var(--bg-color);
+    color: var(--text-color);
     direction: rtl;
+    line-height: 1.6;
   }
   header {
-    background: #004aad;
+    background: var(--primary-color);
     color: white;
-    padding: 10px 20px;
+    padding: 15px 20px;
     text-align: center;
     font-weight: bold;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     position: sticky;
     top: 0;
     z-index: 100;
   }
   main {
     padding: 20px;
-    max-width: 800px;
+    max-width: 900px;
     margin: auto;
   }
   button {
-    background: #004aad;
+    background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 8px 15px;
+    border-radius: 6px;
+    padding: 10px 20px;
     cursor: pointer;
     font-size: 1rem;
-    transition: background 0.3s;
+    transition: background 0.3s, transform 0.2s;
     margin: 5px 0;
   }
   button:hover {
-    background: #003080;
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+  }
+  button:active {
+    transform: translateY(0);
   }
   input, select, textarea {
     width: 100%;
-    padding: 8px;
-    margin: 6px 0 12px 0;
-    border-radius: 4px;
+    padding: 10px;
+    margin: 8px 0 16px 0;
+    border-radius: 6px;
     border: 1px solid #ccc;
     font-size: 1rem;
     box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
   }
   label {
     font-weight: 600;
@@ -61,113 +82,173 @@
     padding: 0;
   }
   li {
-    background: white;
-    margin-bottom: 8px;
-    padding: 10px 15px;
-    border-radius: 6px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    background: var(--card-bg);
+    margin-bottom: 10px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-light);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  li:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+  }
+  .client-item {
+    cursor: pointer;
+  }
+  .transaction-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 50px;
+    gap: 10px;
+    align-items: center;
   }
   .transaction-desc {
-    flex: 2;
+    font-weight: 500;
   }
   .transaction-date {
-    flex: 1;
     font-size: 0.85rem;
     color: #555;
     text-align: center;
   }
   .transaction-amount {
-    flex: 1;
     font-weight: 700;
     text-align: center;
   }
   .transaction-type-purchase {
-    color: green;
+    color: var(--danger-color);
   }
   .transaction-type-payment {
-    color: red;
+    color: var(--success-color);
   }
-  .transaction-actions button {
-    margin-left: 5px;
-    font-size: 1.1rem;
-    background: transparent;
-    color: #004aad;
+  .transaction-actions, .client-actions {
+    display: flex;
+    gap: 5px;
+  }
+  .transaction-actions button, .client-actions button {
+    background: none;
     border: none;
+    color: #888;
+    padding: 5px;
+    font-size: 1.1rem;
     cursor: pointer;
+    transition: color 0.3s;
+  }
+  .transaction-actions button:hover, .client-actions button:hover {
+    color: var(--primary-color);
   }
   .hidden {
     display: none !important;
   }
   section.screen {
     display: none;
+    opacity: 0;
+    transition: opacity 0.5s;
+    padding: 20px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: var(--shadow-medium);
+    margin-top: 20px;
   }
   section.screen.active {
     display: block;
-  }
-  .small-btn {
-    background: transparent;
-    border: none;
-    color: #004aad;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0 6px;
-  }
-  .small-btn:hover {
-    color: #002060;
+    opacity: 1;
   }
   form label.required::after {
-    content: "*";
+    content: " *";
     color: red;
-    margin-left: 4px;
   }
-  #modal-overlay {
+  .modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.6);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
-  #modal-box {
-    background: white;
-    padding: 20px;
-    max-width: 400px;
+  .modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  .modal-box {
+    background: var(--card-bg);
+    padding: 30px;
+    max-width: 450px;
     width: 90%;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    box-shadow: var(--shadow-medium);
     text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
   }
-  #modal-message {
+  .modal-overlay.active .modal-box {
+    transform: scale(1);
+  }
+  .modal-message {
     margin-bottom: 20px;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    font-weight: 500;
   }
-  #modal-buttons button {
-    min-width: 90px;
+  .modal-buttons button {
+    min-width: 100px;
     margin: 0 10px;
   }
   footer {
     text-align: center;
-    padding: 10px;
+    padding: 15px;
     font-size: 0.9rem;
-    color: #555;
+    color: #888;
   }
   .filter-dates {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     flex-wrap: wrap;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: var(--bg-color);
+    border-radius: 8px;
   }
   .filter-dates > div {
     flex: 1;
     min-width: 140px;
   }
-  @media (max-width: 480px) {
+  .total-debt-display {
+    background: #e9ecef;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  #add-transaction-form-client .form-group {
+    margin-bottom: 15px;
+  }
+  #add-transaction-form-client label {
+    margin-bottom: 5px;
+  }
+  .btn-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  @media (max-width: 600px) {
     .filter-dates {
       flex-direction: column;
+    }
+    .transaction-item {
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+    .transaction-date, .transaction-amount {
+      font-size: 0.9rem;
     }
   }
 </style>
@@ -178,54 +259,68 @@
   <section id="home-screen" class="screen active">
     <h2>إضافة معاملة جديدة</h2>
     <form id="add-transaction-form">
-      <label for="transaction-client">اسم العميل<span class="required">*</span></label>
-      <input type="text" id="transaction-client" list="clients-datalist" autocomplete="off" placeholder="ابدأ بالكتابة للاقتراحات" required />
-      <datalist id="clients-datalist"></datalist>
-
-      <label for="transaction-desc" class="required">وصف المعاملة</label>
-      <input type="text" id="transaction-desc" placeholder="مثلاً: 2 كجم أرز" required />
-
-      <label for="transaction-amount" class="required">المبلغ</label>
-      <input type="number" id="transaction-amount" step="0.01" min="0.01" placeholder="مثلاً: 150.00" required />
-
-      <label>نوع المعاملة</label>
-      <select id="transaction-type" required>
-        <option value="purchase">شراء (دين)</option>
-        <option value="payment">دفع</option>
-      </select>
-
-      <label for="transaction-notes">ملاحظات (اختياري)</label>
-      <textarea id="transaction-notes" rows="2" placeholder="أي ملاحظات إضافية"></textarea>
-
+      <div class="form-group">
+        <label for="transaction-client" class="required">اسم العميل</label>
+        <input type="text" id="transaction-client" list="clients-datalist" autocomplete="off" placeholder="ابدأ بالكتابة للاقتراحات" required />
+        <datalist id="clients-datalist"></datalist>
+      </div>
+      <div class="form-group">
+        <label for="transaction-desc" class="required">وصف المعاملة</label>
+        <input type="text" id="transaction-desc" placeholder="مثلاً: 2 كجم أرز" required />
+      </div>
+      <div class="form-group">
+        <label for="transaction-amount" class="required">المبلغ</label>
+        <input type="number" id="transaction-amount" step="0.01" min="0.01" placeholder="مثلاً: 150.00" required />
+      </div>
+      <div class="form-group">
+        <label>نوع المعاملة</label>
+        <select id="transaction-type" required>
+          <option value="purchase">شراء (دين)</option>
+          <option value="payment">دفع</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="transaction-notes">ملاحظات (اختياري)</label>
+        <textarea id="transaction-notes" rows="2" placeholder="أي ملاحظات إضافية"></textarea>
+      </div>
       <button type="submit">إرسال المعاملة</button>
     </form>
-    <button id="btn-to-clients">قائمة العملاء</button>
-    <button id="btn-to-about">عن التطبيق والمصمم</button>
+    <div class="btn-group">
+      <button id="btn-to-clients">قائمة العملاء</button>
+      <button id="btn-to-about">عن التطبيق</button>
+    </div>
   </section>
 
   <section id="clients-screen" class="screen">
     <h2>قائمة العملاء</h2>
     <input type="text" id="search-client-input" placeholder="ابحث عن عميل..." autocomplete="off" />
     <ul id="clients-list-container"></ul>
-    <button id="btn-add-client">إضافة عميل جديد</button>
-    <button id="btn-back-to-home-from-clients">عودة للرئيسية</button>
+    <div class="btn-group">
+      <button id="btn-add-client">إضافة عميل جديد</button>
+      <button id="btn-back-to-home-from-clients">عودة للرئيسية</button>
+    </div>
   </section>
 
   <section id="add-client-screen" class="screen">
     <h2>إضافة عميل جديد</h2>
     <form id="add-client-form">
-      <label for="new-client-name" class="required">اسم العميل</label>
-      <input type="text" id="new-client-name" autocomplete="off" required />
-
-      <label for="new-client-initial-debt">دين مبدئي (اختياري)</label>
-      <input type="number" id="new-client-initial-debt" step="0.01" min="0" placeholder="مثلاً: 500.00" />
-
-      <label for="new-client-initial-desc">وصف الدين المبدئي</label>
-      <input type="text" id="new-client-initial-desc" placeholder="مثلاً: دين قرض من 1 يناير" />
-
+      <div class="form-group">
+        <label for="new-client-name" class="required">اسم العميل</label>
+        <input type="text" id="new-client-name" autocomplete="off" required />
+      </div>
+      <div class="form-group">
+        <label for="new-client-initial-debt">دين مبدئي (اختياري)</label>
+        <input type="number" id="new-client-initial-debt" step="0.01" min="0" placeholder="مثلاً: 500.00" />
+      </div>
+      <div class="form-group">
+        <label for="new-client-initial-desc">وصف الدين المبدئي</label>
+        <input type="text" id="new-client-initial-desc" placeholder="مثلاً: دين قرض من 1 يناير" />
+      </div>
       <button type="submit">إضافة العميل</button>
     </form>
-    <button id="btn-back-to-clients-from-add-client">عودة لقائمة العملاء</button>
+    <div class="btn-group">
+      <button id="btn-back-to-clients-from-add-client">عودة لقائمة العملاء</button>
+    </div>
   </section>
 
   <section id="client-details-screen" class="screen">
@@ -240,68 +335,118 @@
         <input type="date" id="filter-to-date" />
       </div>
     </div>
+    <div class="total-debt-display" id="total-debt-display"></div>
     <ul id="transactions-list"></ul>
-
     <form id="add-transaction-form-client">
-      <label for="transaction-desc-client" class="required">وصف المعاملة</label>
-      <input type="text" id="transaction-desc-client" placeholder="مثلاً: 1 كجم سكر" required />
-
-      <label for="transaction-amount-client" class="required">المبلغ</label>
-      <input type="number" id="transaction-amount-client" step="0.01" min="0.01" placeholder="مثلاً: 200.00" required />
-
-      <label>نوع المعاملة</label>
-      <select id="transaction-type-client" required>
-        <option value="purchase">شراء (دين)</option>
-        <option value="payment">دفع</option>
-      </select>
-
-      <label for="transaction-notes-client">ملاحظات (اختياري)</label>
-      <textarea id="transaction-notes-client" rows="2" placeholder="أي ملاحظات إضافية"></textarea>
-
+      <div class="form-group">
+        <label for="transaction-desc-client" class="required">وصف المعاملة</label>
+        <input type="text" id="transaction-desc-client" placeholder="مثلاً: 1 كجم سكر" required />
+      </div>
+      <div class="form-group">
+        <label for="transaction-amount-client" class="required">المبلغ</label>
+        <input type="number" id="transaction-amount-client" step="0.01" min="0.01" placeholder="مثلاً: 200.00" required />
+      </div>
+      <div class="form-group">
+        <label>نوع المعاملة</label>
+        <select id="transaction-type-client" required>
+          <option value="purchase">شراء (دين)</option>
+          <option value="payment">دفع</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="transaction-notes-client">ملاحظات (اختياري)</label>
+        <textarea id="transaction-notes-client" rows="2" placeholder="أي ملاحظات إضافية"></textarea>
+      </div>
       <button type="submit">إضافة معاملة</button>
     </form>
-
-    <button id="btn-calc-total-debt">حساب إجمالي الدين</button>
-    <div id="total-debt-display" style="margin-top:10px; font-weight:bold;"></div>
-
-    <button id="btn-export-csv">تصدير البيانات (CSV)</button>
-    <button id="btn-edit-client-name">تعديل الاسم</button>
-    <button id="btn-back-to-clients-from-details">عودة لقائمة العملاء</button>
+    <div class="btn-group">
+      <button id="btn-export-csv">تصدير البيانات (CSV)</button>
+      <button id="btn-edit-client-name">تعديل اسم العميل</button>
+      <button id="btn-back-to-clients-from-details">عودة لقائمة العملاء</button>
+    </div>
   </section>
 
   <section id="edit-client-name-screen" class="screen">
     <h2>تعديل اسم العميل</h2>
     <form id="edit-client-name-form">
-      <label for="edit-client-name-input" class="required">الاسم الجديد</label>
-      <input type="text" id="edit-client-name-input" autocomplete="off" required />
+      <div class="form-group">
+        <label for="edit-client-name-input" class="required">الاسم الجديد</label>
+        <input type="text" id="edit-client-name-input" autocomplete="off" required />
+      </div>
       <button type="submit">حفظ التعديل</button>
     </form>
-    <button id="btn-back-to-details-from-edit-name">عودة لتفاصيل العميل</button>
+    <div class="btn-group">
+      <button id="btn-back-to-details-from-edit-name">عودة لتفاصيل العميل</button>
+    </div>
   </section>
 
   <section id="about-screen" class="screen">
-    <h2>عن التطبيق والمصمم</h2>
-    <p>هذا التطبيق من تصميم: <strong>عبدالله الزمزمي</strong></p>
-    <p>يهدف لتبسيط إدارة الديون والمعاملات المالية بطريقة سهلة وسلسة.</p>
-    <button id="btn-back-to-home-from-about">عودة للرئيسية</button>
+    <h2>عن التطبيق</h2>
+    <p>هذا التطبيق هو نظام بسيط لإدارة الفواتير والديون، مصمم لتبسيط عملية تتبع المعاملات المالية.</p>
+    <div class="btn-group">
+      <button id="btn-back-to-home-from-about">عودة للرئيسية</button>
+    </div>
   </section>
 </main>
 
-<div id="modal-overlay" class="hidden">
-  <div id="modal-box">
-    <div id="modal-message"></div>
-    <div id="modal-buttons"></div>
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal-box">
+    <div class="modal-message"></div>
+    <div class="modal-buttons">
+      <button class="confirm-btn">نعم</button>
+      <button class="cancel-btn">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="edit-transaction-modal">
+  <div class="modal-box">
+    <h3 style="margin-top: 0;">تعديل المعاملة</h3>
+    <form id="edit-transaction-form">
+      <div class="form-group">
+        <label for="edit-tx-desc" class="required">وصف المعاملة</label>
+        <input type="text" id="edit-tx-desc" required />
+      </div>
+      <div class="form-group">
+        <label for="edit-tx-amount" class="required">المبلغ</label>
+        <input type="number" id="edit-tx-amount" step="0.01" min="0.01" required />
+      </div>
+      <div class="form-group">
+        <label for="edit-tx-type">نوع المعاملة</label>
+        <select id="edit-tx-type" required>
+          <option value="purchase">شراء (دين)</option>
+          <option value="payment">دفع</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="edit-tx-notes">ملاحظات</label>
+        <textarea id="edit-tx-notes" rows="2"></textarea>
+      </div>
+      <div class="modal-buttons">
+        <button type="submit" class="confirm-btn">حفظ</button>
+        <button type="button" class="cancel-btn" id="cancel-edit-tx">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="message-modal">
+  <div class="modal-box">
+    <div class="modal-message"></div>
+    <div class="modal-buttons">
+      <button class="confirm-btn">حسنًا</button>
+    </div>
   </div>
 </div>
 
 <footer>
-  معرف المستخدم: <span id="user-id"></span>
+  <p>تم تطويره بواسطة AI - عبدالله الزمزمي</p>
 </footer>
 
 <script>
 (() => {
-  const userId = "user-" + Math.random().toString(36).substr(2, 9);
-  document.getElementById("user-id").textContent = userId;
+  const userId = "user-" + (localStorage.getItem("app-user-id") || Math.random().toString(36).substr(2, 9));
+  localStorage.setItem("app-user-id", userId);
 
   const screens = {
     home: document.getElementById("home-screen"),
@@ -310,6 +455,11 @@
     clientDetails: document.getElementById("client-details-screen"),
     editClientName: document.getElementById("edit-client-name-screen"),
     about: document.getElementById("about-screen")
+  };
+  const modal = {
+    confirm: document.getElementById("confirm-modal"),
+    editTransaction: document.getElementById("edit-transaction-modal"),
+    message: document.getElementById("message-modal")
   };
 
   let clients = JSON.parse(localStorage.getItem(userId + "-clients") || "[]");
@@ -341,36 +491,48 @@
   function renderClientsList(filter = "") {
     const ul = document.getElementById("clients-list-container");
     ul.innerHTML = "";
-    clients
-      .filter(c => c.name.includes(filter))
-      .forEach(client => {
-        const li = document.createElement("li");
-        li.textContent = client.name;
-        const actionsDiv = document.createElement("div");
+    const filteredClients = clients.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()));
+    
+    if (filteredClients.length === 0) {
+      ul.innerHTML = "<p style='text-align: center; color: #888; padding-top: 20px;'>لا يوجد عملاء بهذا الاسم.</p>";
+      return;
+    }
 
-        const btnDelete = document.createElement("button");
-        btnDelete.classList.add("small-btn");
-        btnDelete.textContent = "🗑️";
-        btnDelete.title = "حذف العميل";
-        btnDelete.onclick = () => confirmModal(`هل تريد حذف العميل "${client.name}" مع كل معاملاته؟`, () => {
-          clients = clients.filter(c => c.id !== client.id);
-          saveClients();
-          renderClientsList();
-          updateClientSuggestions();
-        });
-        actionsDiv.appendChild(btnDelete);
+    filteredClients.forEach(client => {
+      const li = document.createElement("li");
+      li.classList.add("client-item");
+      li.innerHTML = `
+        <span>${client.name}</span>
+        <div class="client-actions">
+          <button title="حذف العميل" data-action="delete" data-client-id="${client.id}">🗑️</button>
+        </div>
+      `;
+      li.onclick = (e) => {
+        if(e.target.dataset.action === "delete") {
+          e.stopPropagation();
+          confirmModal(`هل أنت متأكد من حذف العميل "${client.name}"؟`, () => {
+            clients = clients.filter(c => c.id !== client.id);
+            saveClients();
+            renderClientsList();
+            updateClientSuggestions();
+          });
+        } else {
+          currentClientId = client.id;
+          showClientDetails();
+          showScreen("clientDetails");
+        }
+      };
+      ul.appendChild(li);
+    });
+  }
 
-        li.appendChild(actionsDiv);
-        li.style.justifyContent = "space-between";
-        li.onclick = (e) => {
-          if(e.target !== btnDelete) {
-            currentClientId = client.id;
-            showClientDetails();
-            showScreen("clientDetails");
-          }
-        };
-        ul.appendChild(li);
-      });
+  function calculateTotalDebt(transactionsToCalculate) {
+    let total = 0;
+    transactionsToCalculate.forEach(tx => {
+      if(tx.type === "purchase") total += tx.amount;
+      else if(tx.type === "payment") total -= tx.amount;
+    });
+    return total;
   }
 
   function showClientDetails() {
@@ -378,6 +540,7 @@
     if (!client) return;
 
     document.getElementById("client-details-name").textContent = client.name;
+    document.getElementById("add-transaction-form-client").reset();
     renderTransactions(client);
   }
 
@@ -385,7 +548,6 @@
     const ul = document.getElementById("transactions-list");
     ul.innerHTML = "";
 
-    // التصفية حسب التاريخ
     const fromDate = document.getElementById("filter-from-date").value;
     const toDate = document.getElementById("filter-to-date").value;
 
@@ -397,97 +559,141 @@
       filteredTransactions = filteredTransactions.filter(t => t.date <= toDate);
     }
 
-    filteredTransactions.forEach(tx => {
-      const li = document.createElement("li");
+    if (filteredTransactions.length === 0) {
+      ul.innerHTML = "<p style='text-align: center; color: #888; padding-top: 20px;'>لا توجد معاملات في هذه الفترة.</p>";
+    } else {
+      filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+      filteredTransactions.forEach(tx => {
+        const li = document.createElement("li");
+        li.classList.add("transaction-item");
 
-      const desc = document.createElement("div");
-      desc.textContent = tx.description + (tx.notes ? ` (${tx.notes})` : "");
-      desc.classList.add("transaction-desc");
+        const descriptionContent = tx.description + (tx.notes ? ` <span style="font-size:0.9em;color:#777;">(${tx.notes})</span>` : "");
+        
+        li.innerHTML = `
+          <div class="transaction-desc">${descriptionContent}</div>
+          <div class="transaction-date">${tx.date}</div>
+          <div class="transaction-amount ${tx.type === "purchase" ? "transaction-type-purchase" : "transaction-type-payment"}">
+            ${tx.type === "purchase" ? "+" : "-"} ${tx.amount.toFixed(2)} ريال
+          </div>
+          <div class="transaction-actions">
+            <button title="تعديل" data-tx-id="${tx.id}" data-action="edit">✏️</button>
+            <button title="حذف" data-tx-id="${tx.id}" data-action="delete">🗑️</button>
+          </div>
+        `;
 
-      const dateDiv = document.createElement("div");
-      dateDiv.textContent = tx.date;
-      dateDiv.classList.add("transaction-date");
+        li.querySelector('[data-action="edit"]').onclick = (e) => {
+          e.stopPropagation();
+          openEditTransactionModal(tx);
+        };
+        li.querySelector('[data-action="delete"]').onclick = (e) => {
+          e.stopPropagation();
+          confirmModal(`هل تريد حذف هذه المعاملة؟`, () => {
+            client.transactions = client.transactions.filter(t => t.id !== tx.id);
+            saveClients();
+            renderTransactions(client);
+            updateTotalDebtDisplay(client);
+          });
+        };
+        ul.appendChild(li);
+      });
+    }
+    updateTotalDebtDisplay(client, filteredTransactions);
+  }
 
-      const amountDiv = document.createElement("div");
-      amountDiv.textContent = (tx.type === "purchase" ? "+" : "-") + tx.amount.toFixed(2);
-      amountDiv.classList.add("transaction-amount");
-      amountDiv.classList.add(tx.type === "purchase" ? "transaction-type-purchase" : "transaction-type-payment");
-
-      const actionsDiv = document.createElement("div");
-      actionsDiv.classList.add("transaction-actions");
-
-      // تعديل
-      const btnEdit = document.createElement("button");
-      btnEdit.textContent = "✏️";
-      btnEdit.title = "تعديل المعاملة";
-      btnEdit.onclick = () => {
-        editTransaction(tx.id);
-      };
-      actionsDiv.appendChild(btnEdit);
-
-      // حذف
-      const btnDelete = document.createElement("button");
-      btnDelete.textContent = "🗑️";
-      btnDelete.title
-
-      = "حذف المعاملة";
-      btnDelete.onclick = () => {
-        confirmModal(`هل تريد حذف هذه المعاملة؟`, () => {
-          client.transactions = client.transactions.filter(t => t.id !== tx.id);
-          saveClients();
-          renderTransactions(client);
-        });
-      };
-      actionsDiv.appendChild(btnDelete);
-
-      li.appendChild(desc);
-      li.appendChild(dateDiv);
-      li.appendChild(amountDiv);
-      li.appendChild(actionsDiv);
-      ul.appendChild(li);
-    });
+  function updateTotalDebtDisplay(client, transactionsToCalculate) {
+    if(!transactionsToCalculate) {
+        transactionsToCalculate = client.transactions;
+    }
+    const total = calculateTotalDebt(transactionsToCalculate);
+    document.getElementById("total-debt-display").textContent = `إجمالي الدين الحالي: ${total.toFixed(2)} ريال`;
   }
 
   function confirmModal(message, onConfirm) {
-    const overlay = document.getElementById("modal-overlay");
-    const messageDiv = document.getElementById("modal-message");
-    const buttonsDiv = document.getElementById("modal-buttons");
+    const overlay = modal.confirm;
+    overlay.querySelector(".modal-message").textContent = message;
+    
+    const confirmBtn = overlay.querySelector(".confirm-btn");
+    const cancelBtn = overlay.querySelector(".cancel-btn");
 
-    messageDiv.textContent = message;
-    buttonsDiv.innerHTML = "";
-
-    const btnYes = document.createElement("button");
-    btnYes.textContent = "نعم";
-    btnYes.onclick = () => {
-      overlay.classList.add("hidden");
+    confirmBtn.onclick = () => {
+      overlay.classList.remove("active");
       onConfirm();
     };
-
-    const btnNo = document.createElement("button");
-    btnNo.textContent = "لا";
-    btnNo.onclick = () => {
-      overlay.classList.add("hidden");
+    cancelBtn.onclick = () => {
+      overlay.classList.remove("active");
     };
 
-    buttonsDiv.appendChild(btnYes);
-    buttonsDiv.appendChild(btnNo);
-    overlay.classList.remove("hidden");
+    overlay.classList.add("active");
   }
+
+  function messageModal(message, onConfirm) {
+    const overlay = modal.message;
+    overlay.querySelector(".modal-message").textContent = message;
+    
+    const confirmBtn = overlay.querySelector(".confirm-btn");
+
+    confirmBtn.onclick = () => {
+      overlay.classList.remove("active");
+      if(onConfirm) onConfirm();
+    };
+
+    overlay.classList.add("active");
+  }
+
+  function openEditTransactionModal(transaction) {
+    const editModal = modal.editTransaction;
+    const form = document.getElementById("edit-transaction-form");
+    
+    document.getElementById("edit-tx-desc").value = transaction.description;
+    document.getElementById("edit-tx-amount").value = transaction.amount;
+    document.getElementById("edit-tx-type").value = transaction.type;
+    document.getElementById("edit-tx-notes").value = transaction.notes;
+    
+    editModal.classList.add("active");
+
+    form.onsubmit = (e) => {
+      e.preventDefault();
+      const client = clients.find(c => c.id === currentClientId);
+      if (!client) return;
+
+      const newDesc = document.getElementById("edit-tx-desc").value.trim();
+      const newAmount = parseFloat(document.getElementById("edit-tx-amount").value);
+      const newType = document.getElementById("edit-tx-type").value;
+      const newNotes = document.getElementById("edit-tx-notes").value.trim();
+
+      const txIndex = client.transactions.findIndex(t => t.id === transaction.id);
+      if (txIndex !== -1) {
+        client.transactions[txIndex] = {
+          ...client.transactions[txIndex],
+          description: newDesc,
+          amount: newAmount,
+          type: newType,
+          notes: newNotes,
+        };
+        saveClients();
+        renderTransactions(client);
+        updateTotalDebtDisplay(client);
+      }
+      editModal.classList.remove("active");
+    };
+  }
+
+  document.getElementById("cancel-edit-tx").onclick = () => {
+    modal.editTransaction.classList.remove("active");
+  };
 
   // إضافة معاملة جديدة من شاشة العميل
   document.getElementById("add-transaction-form-client").addEventListener("submit", e => {
     e.preventDefault();
     const client = clients.find(c => c.id === currentClientId);
     if (!client) return;
-
-    const desc = document.getElementById("transaction-desc-client").value.trim();
-    const amount = parseFloat(document.getElementById("transaction-amount-client").value);
-    const type = document.getElementById("transaction-type-client").value;
-    const notes = document.getElementById("transaction-notes-client").value.trim();
-    if (!desc || isNaN(amount) || amount <= 0) {
-      alert("يرجى تعبئة وصف صحيح وقيمة صحيحة أكبر من صفر.");
-      return;
-    }
+    const form = e.target;
+    
+    const desc = form.querySelector("#transaction-desc-client").value.trim();
+    const amount = parseFloat(form.querySelector("#transaction-amount-client").value);
+    const type = form.querySelector("#transaction-type-client").value;
+    const notes = form.querySelector("#transaction-notes-client").value.trim();
+    
     const newTransaction = {
       id: generateId(),
       description: desc,
@@ -500,30 +706,17 @@
     client.transactions.push(newTransaction);
     saveClients();
     renderTransactions(client);
-
-    // تنظيف الحقول
-    e.target.reset();
+    updateTotalDebtDisplay(client);
+    form.reset();
   });
 
-  // حساب إجمالي الدين
-  document.getElementById("btn-calc-total-debt").onclick = () => {
-    const client = clients.find(c => c.id === currentClientId);
-    if (!client) return;
-    let total = 0;
-    const fromDate = document.getElementById("filter-from-date").value;
-    const toDate = document.getElementById("filter-to-date").value;
-
-    let filteredTransactions = client.transactions || [];
-    if(fromDate) filteredTransactions = filteredTransactions.filter(t => t.date >= fromDate);
-    if(toDate) filteredTransactions = filteredTransactions.filter(t => t.date <= toDate);
-
-    filteredTransactions.forEach(tx => {
-      if(tx.type === "purchase") total += tx.amount;
-      else if(tx.type === "payment") total -= tx.amount;
+  // تصفير الدين (ميزة جديدة) - تم إعادة تسميته لحساب الدين
+  document.querySelectorAll('#filter-from-date, #filter-to-date').forEach(input => {
+    input.addEventListener('change', () => {
+      const client = clients.find(c => c.id === currentClientId);
+      if (client) renderTransactions(client);
     });
-
-    document.getElementById("total-debt-display").textContent = `إجمالي الدين الحالي: ${total.toFixed(2)} ريال`;
-  };
+  });
 
   // تصدير CSV
   document.getElementById("btn-export-csv").onclick = () => {
@@ -537,14 +730,15 @@
     if(toDate) filteredTransactions = filteredTransactions.filter(t => t.date <= toDate);
 
     let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "\ufeff";
     csvContent += "التاريخ,الوصف,النوع,المبلغ,ملاحظات\n";
     filteredTransactions.forEach(t => {
       const row = [
         t.date,
-        `"${t.description}"`,
-        t.type === "purchase" ? "شراء" : "دفع",
+        `"${t.description.replace(/"/g, '""')}"`,
+        t.type === "purchase" ? "شراء (دين)" : "دفع",
         t.amount.toFixed(2),
-        `"${t.notes || ""}"`
+        `"${t.notes.replace(/"/g, '""') || ""}"`
       ].join(",");
       csvContent += row + "\n";
     });
@@ -552,7 +746,7 @@
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${client.name}_transactions.csv`);
+    link.setAttribute("download", `${client.name}_transactions_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -570,7 +764,11 @@
     e.preventDefault();
     const newName = document.getElementById("edit-client-name-input").value.trim();
     if (!newName) {
-      alert("الاسم الجديد لا يمكن أن يكون فارغًا.");
+      messageModal("الاسم الجديد لا يمكن أن يكون فارغًا.");
+      return;
+    }
+    if(clients.some(c => c.name === newName && c.id !== currentClientId)) {
+      messageModal("يوجد عميل آخر بنفس الاسم، يرجى اختيار اسم مختلف.");
       return;
     }
     const client = clients.find(c => c.id === currentClientId);
@@ -582,11 +780,6 @@
     renderClientsList();
     showScreen("clientDetails");
   });
-
-  // زر العودة لتفاصيل العميل من تعديل الاسم
-  document.getElementById("btn-back-to-details-from-edit-name").onclick = () => {
-    showScreen("clientDetails");
-  };
 
   // التنقل بين الشاشات
   document.getElementById("btn-to-clients").onclick = () => {
@@ -610,6 +803,9 @@
     renderClientsList();
     showScreen("clients");
   };
+  document.getElementById("btn-back-to-details-from-edit-name").onclick = () => {
+    showScreen("clientDetails");
+  };
 
   // إضافة عميل جديد
   document.getElementById("btn-add-client").onclick = () => {
@@ -619,15 +815,12 @@
   document.getElementById("add-client-form").addEventListener("submit", e => {
     e.preventDefault();
     const name = document.getElementById("new-client-name").value.trim();
-    if (!name) {
-      alert("اسم العميل مطلوب.");
-      return;
-    }
+    if (!name) return;
     if(clients.some(c => c.name === name)) {
-      alert("يوجد عميل بنفس الاسم، اختر اسمًا آخر.");
+      messageModal("يوجد عميل بنفس الاسم، اختر اسمًا آخر.");
       return;
     }
-    const initialDebt = parseFloat(document.getElementById("new-client-initial-debt").value);
+    const initialDebt = parseFloat(document.getElementById("new-client-initial-debt").value) || 0;
     const initialDesc = document.getElementById("new-client-initial-desc").value.trim();
 
     const newClient = {
@@ -636,7 +829,7 @@
       transactions: []
     };
 
-    if (!isNaN(initialDebt) && initialDebt > 0) {
+    if (initialDebt > 0) {
       newClient.transactions.push({
         id: generateId(),
         description: initialDesc || "دين مبدئي",
@@ -656,30 +849,32 @@
   // إضافة معاملة من الشاشة الرئيسية
   document.getElementById("add-transaction-form").addEventListener("submit", e => {
     e.preventDefault();
-    const clientName = document.getElementById("transaction-client").value.trim();
-    if (!clientName) {
-      alert("اسم العميل مطلوب.");
-      return;
-    }
+    const form = e.target;
+    const clientName = form.querySelector("#transaction-client").value.trim();
+    
     let client = clients.find(c => c.name === clientName);
     if (!client) {
-      // إضافة عميل جديد تلقائيًا
-      client = {
-        id: generateId(),
-        name: clientName,
-        transactions: []
-      };
-      clients.push(client);
+      confirmModal("العميل غير موجود. هل تريد إضافته تلقائيًا؟", () => {
+        client = {
+          id: generateId(),
+          name: clientName,
+          transactions: []
+        };
+        clients.push(client);
+        saveClients();
+        processTransaction(client, form);
+      });
+    } else {
+      processTransaction(client, form);
     }
-    const desc = document.getElementById("transaction-desc").value.trim();
-    const amount = parseFloat(document.getElementById("transaction-amount").value);
-    const type = document.getElementById("transaction-type").value;
-    const notes = document.getElementById("transaction-notes").value.trim();
+  });
 
-    if (!desc || isNaN(amount) || amount <= 0) {
-      alert("يرجى تعبئة وصف صحيح وقيمة صحيحة أكبر من صفر.");
-      return;
-    }
+  function processTransaction(client, form) {
+    const desc = form.querySelector("#transaction-desc").value.trim();
+    const amount = parseFloat(form.querySelector("#transaction-amount").value);
+    const type = form.querySelector("#transaction-type").value;
+    const notes = form.querySelector("#transaction-notes").value.trim();
+
     const newTransaction = {
       id: generateId(),
       description: desc,
@@ -691,9 +886,10 @@
     client.transactions.push(newTransaction);
     saveClients();
     updateClientSuggestions();
-    alert("تم حفظ المعاملة بنجاح!");
-    e.target.reset();
-  });
+    messageModal("تم حفظ المعاملة بنجاح!", () => {
+      form.reset();
+    });
+  }
 
   // تصفية المعاملات عند تغير التواريخ
   document.getElementById("filter-from-date").addEventListener("change", () => {
@@ -704,42 +900,11 @@
     const client = clients.find(c => c.id === currentClientId);
     if (client) renderTransactions(client);
   });
+  document.getElementById("search-client-input").addEventListener("input", (e) => {
+    renderClientsList(e.target.value);
+  });
 
-  // تعديل معاملة (تفعيل الحقول في المكان)
-  function editTransaction(txId) {
-    const client = clients.find(c => c.id === currentClientId);
-    if (!client) return;
-    const tx = client.transactions.find(t => t.id === txId);
-    if (!tx) return;
-
-    // نفتح نافذة تعديل صغيرة أو نستخدم نفس شاشة الإضافة مع تعبئة القيم؟
-    // لسهولة التنفيذ هنا، سنستخدم prompt لإعادة التعديل:
-
-    const newDesc = prompt("تعديل وصف المعاملة:", tx.description);
-    if (newDesc === null) return;
-    const newAmountStr = prompt("تعديل المبلغ:", tx.amount.toFixed(2));
-    if (newAmountStr === null) return;
-    const newAmount = parseFloat(newAmountStr);
-    if (isNaN(newAmount) || newAmount <= 0) {
-      alert("المبلغ غير صالح.");
-      return;
-    }
-    const newType = prompt("نوع المعاملة: اكتب 'purchase' للشراء أو 'payment' للدفع:", tx.type);
-    if (newType !== "purchase" && newType !== "payment") {
-      alert("نوع المعاملة غير صالح.");
-      return;
-    }
-    const newNotes = prompt("ملاحظات (اختياري):", tx.notes || "");
-
-    tx.description = newDesc.trim();
-    tx.amount = newAmount;
-    tx.type = newType;
-    tx.notes = newNotes ? newNotes.trim() : "";
-    saveClients();
-    renderTransactions(client);
-  }
-
-  // بداية
+  // بداية التطبيق
   updateClientSuggestions();
   showScreen("home");
 })();
