@@ -31,8 +31,6 @@
     text-align: center;
     font-weight: bold;
     font-size: 1.6rem;
-    position: sticky;
-    top: 0;
     z-index: 100;
   }
   main {
@@ -55,11 +53,11 @@
     width: 100%;
     padding: 12px 20px;
     font-size: 1.1rem;
-    background-color: #007bff; /* لون جديد لزر الإرسال */
+    background-color: #007bff;
   }
   button.secondary-btn {
     width: 100%;
-    background-color: #6c757d; /* لون جديد لزر قائمة العملاء */
+    background-color: #6c757d;
   }
   button:hover {
     background: var(--secondary-color);
@@ -273,27 +271,33 @@
     margin-top: 20px;
   }
   /* قائمة العملاء - أزرار ثابتة وشريط بحث */
-  .clients-header {
-    background: var(--bg-color);
-    padding: 10px 0;
+  .clients-header,
+  .client-details-header {
+    background: var(--card-bg);
+    padding: 10px;
     position: sticky;
-    top: 60px; /* تحت الهيدر الرئيسي */
+    top: 0;
     z-index: 99;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
   }
-  .clients-controls {
+  .clients-controls,
+  .client-details-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
     margin-bottom: 10px;
   }
-  .clients-controls h2 {
+  .clients-controls h2,
+  .client-details-controls h2 {
     margin: 0;
     flex-grow: 1;
     text-align: center;
   }
-  .clients-controls button {
+  .clients-controls button,
+  .client-details-controls button {
     padding: 8px 12px;
     white-space: nowrap;
     min-width: unset;
@@ -302,7 +306,8 @@
     margin-top: 0;
     margin-bottom: 0;
   }
-  #btn-back-to-home-from-clients, #btn-add-client {
+  #btn-back-to-home-from-clients, #btn-add-client,
+  #btn-back-to-clients-from-details, #btn-edit-client-name {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -310,10 +315,117 @@
   .icon-btn {
     font-size: 1.2rem;
   }
-  /* أيقونة سلة مهملات جديدة */
   .trash-icon {
-    font-size: 1.2rem;
     color: var(--danger-color);
+  }
+  .btn-group-main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  /* إخفاء الهيدر في الصفحات الأخرى */
+  #clients-screen header,
+  #client-details-screen header,
+  #add-client-screen header,
+  #edit-client-name-screen header,
+  #about-screen header {
+      display: none;
+  }
+  
+  /* تفاصيل العميل - التعديلات الجديدة */
+  .client-details-header {
+    background: var(--bg-color);
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .client-details-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .client-details-controls h2 {
+    font-size: 1.5rem;
+  }
+  .client-details-controls button {
+    background-color: transparent;
+    color: var(--primary-color);
+    padding: 8px;
+    margin: 0;
+  }
+  .client-details-controls button:hover {
+    background-color: var(--bg-color);
+  }
+  .date-filter-row {
+    background: var(--card-bg);
+    padding: 10px;
+    position: sticky;
+    top: 60px; /* تحت الهيدر العلوي */
+    z-index: 98;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .date-filter-row .filter-dates {
+    flex-grow: 1;
+    margin-bottom: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .date-filter-row #btn-add-transaction {
+    background-color: var(--success-color);
+    color: white;
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow-medium);
+  }
+  .client-details-footer {
+    background: var(--card-bg);
+    padding: 10px;
+    position: sticky;
+    bottom: 0;
+    z-index: 99;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+  }
+  .client-details-footer .total-debt-display {
+    margin: 0;
+    background: none;
+    padding: 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+  .client-details-footer #btn-export-csv {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow-medium);
   }
   @media (max-width: 600px) {
     .filter-dates {
@@ -330,15 +442,22 @@
         flex-direction: column;
     }
     .clients-controls {
-      flex-direction: column;
+      flex-direction: row;
+    }
+    .clients-controls h2, .client-details-controls h2 {
+      font-size: 1.3rem;
+    }
+    .clients-controls button, .client-details-controls button {
+      font-size: 0.9rem;
+      padding: 6px 10px;
     }
   }
 </style>
 </head>
 <body>
-<header>نظام الفوترة وإدارة الديون</header>
 <main>
   <section id="home-screen" class="screen active">
+    <header>نظام الفوترة وإدارة الديون</header>
     <h2>إضافة معاملة جديدة</h2>
     <form id="add-transaction-form">
       <div class="form-group">
@@ -367,7 +486,7 @@
       </div>
       <button type="submit" class="submit-btn">إرسال المعاملة</button>
     </form>
-    <div class="btn-group">
+    <div class="btn-group-main">
       <button id="btn-to-clients" class="secondary-btn">قائمة العملاء</button>
     </div>
   </section>
@@ -375,11 +494,11 @@
   <section id="clients-screen" class="screen">
     <div class="clients-header">
       <div class="clients-controls">
-        <button id="btn-back-to-home-from-clients">
+        <button id="btn-back-to-home-from-clients" class="secondary-btn">
           <span class="icon-btn">←</span> عودة
         </button>
         <h2>قائمة العملاء</h2>
-        <button id="btn-add-client">
+        <button id="btn-add-client" class="secondary-btn">
           <span class="icon-btn">+</span> إضافة
         </button>
       </div>
@@ -389,45 +508,38 @@
   </section>
 
   <section id="client-details-screen" class="screen">
-    <h2>تفاصيل العميل: <span id="client-details-name"></span></h2>
-    <div class="filter-dates">
-      <div>
-        <label for="filter-from-date">من تاريخ</label>
-        <input type="date" id="filter-from-date" />
-      </div>
-      <div>
-        <label for="filter-to-date">إلى تاريخ</label>
-        <input type="date" id="filter-to-date" />
+    <div class="client-details-header">
+      <div class="client-details-controls">
+        <button id="btn-back-to-clients-from-details">
+          <span class="icon-btn">←</span> عودة
+        </button>
+        <h2 id="client-details-name"></h2>
+        <button id="btn-edit-client-name">
+          <span class="icon-btn">✏️</span> تعديل
+        </button>
       </div>
     </div>
-    <div class="total-debt-display" id="total-debt-display"></div>
+    <div class="date-filter-row">
+      <div class="filter-dates">
+        <div>
+          <label for="filter-from-date">من تاريخ</label>
+          <input type="date" id="filter-from-date" />
+        </div>
+        <div>
+          <label for="filter-to-date">إلى تاريخ</label>
+          <input type="date" id="filter-to-date" />
+        </div>
+      </div>
+      <button id="btn-add-transaction">+</button>
+    </div>
+    
     <ul id="transactions-list"></ul>
-    <form id="add-transaction-form-client">
-      <div class="form-group">
-        <label for="transaction-desc-client" class="required">وصف المعاملة</label>
-        <input type="text" id="transaction-desc-client" placeholder="مثلاً: 1 كجم سكر" required />
-      </div>
-      <div class="form-group">
-        <label for="transaction-amount-client" class="required">المبلغ</label>
-        <input type="number" id="transaction-amount-client" step="0.01" min="0.01" placeholder="مثلاً: 200.00" required />
-      </div>
-      <div class="form-group">
-        <label>نوع المعاملة</label>
-        <select id="transaction-type-client" required>
-          <option value="purchase">شراء (دين)</option>
-          <option value="payment">دفع</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="transaction-notes-client">ملاحظات (اختياري)</label>
-        <textarea id="transaction-notes-client" rows="2" placeholder="أي ملاحظات إضافية"></textarea>
-      </div>
-      <button type="submit">إضافة معاملة</button>
-    </form>
-    <div class="btn-group">
-      <button id="btn-export-csv">تصدير البيانات (CSV)</button>
-      <button id="btn-edit-client-name">تعديل اسم العميل</button>
-      <button id="btn-back-to-clients-from-details">عودة لقائمة العملاء</button>
+
+    <div class="client-details-footer">
+      <div class="total-debt-display" id="total-debt-display"></div>
+      <button id="btn-export-csv">
+        <span class="icon-btn">⬇️</span>
+      </button>
     </div>
   </section>
 </main>
@@ -523,6 +635,37 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="add-transaction-client-modal">
+  <div class="modal-box">
+    <h3>إضافة معاملة جديدة</h3>
+    <form id="add-transaction-form-client">
+      <div class="form-group">
+        <label for="transaction-desc-client" class="required">وصف المعاملة</label>
+        <input type="text" id="transaction-desc-client" placeholder="مثلاً: 1 كجم سكر" required />
+      </div>
+      <div class="form-group">
+        <label for="transaction-amount-client" class="required">المبلغ</label>
+        <input type="number" id="transaction-amount-client" step="0.01" min="0.01" placeholder="مثلاً: 200.00" required />
+      </div>
+      <div class="form-group">
+        <label>نوع المعاملة</label>
+        <select id="transaction-type-client" required>
+          <option value="purchase">شراء (دين)</option>
+          <option value="payment">دفع</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="transaction-notes-client">ملاحظات (اختياري)</label>
+        <textarea id="transaction-notes-client" rows="2" placeholder="أي ملاحظات إضافية"></textarea>
+      </div>
+      <div class="modal-buttons">
+        <button type="submit">إضافة معاملة</button>
+        <button type="button" class="cancel-btn" id="cancel-add-tx-client">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="modal-overlay" id="message-modal">
   <div class="modal-box">
     <div class="modal-message"></div>
@@ -553,6 +696,7 @@
     editTransaction: document.getElementById("edit-transaction-modal"),
     addClient: document.getElementById("add-client-modal"),
     editClientName: document.getElementById("edit-client-name-modal"),
+    addTransactionClient: document.getElementById("add-transaction-client-modal"),
     about: document.getElementById("about-modal")
   };
   
@@ -568,6 +712,7 @@
   }
 
   function showScreen(screenName) {
+    document.querySelector('main').classList.remove('home-active', 'clients-active', 'client-details-active');
     Object.values(screens).forEach(screen => screen.classList.remove("active"));
     screens[screenName].classList.add("active");
   }
@@ -711,7 +856,7 @@
 
   function confirmModal(message, onConfirm, onCancel) {
     const overlay = modals.confirm;
-    overlay.querySelector(".modal-message").textContent = message;
+    overlay.querySelector(".modal-message").innerHTML = message;
     
     const confirmBtn = overlay.querySelector(".confirm-btn");
     const cancelBtn = overlay.querySelector(".cancel-btn");
@@ -730,7 +875,7 @@
 
   function messageModal(message, onConfirm) {
     const overlay = modals.message;
-    overlay.querySelector(".modal-message").textContent = message;
+    overlay.querySelector(".modal-message").innerHTML = message;
     
     const confirmBtn = overlay.querySelector(".confirm-btn");
 
@@ -783,7 +928,16 @@
     hideModal("editTransaction");
   };
 
-  // إضافة معاملة جديدة من شاشة العميل
+  // فتح نافذة إضافة معاملة جديدة
+  document.getElementById("btn-add-transaction").onclick = () => {
+    document.getElementById("add-transaction-form-client").reset();
+    showModal("addTransactionClient");
+  };
+  document.getElementById("cancel-add-tx-client").onclick = () => {
+    hideModal("addTransactionClient");
+  };
+
+  // إضافة معاملة جديدة من النافذة المنبثقة
   document.getElementById("add-transaction-form-client").addEventListener("submit", e => {
     e.preventDefault();
     const client = clients.find(c => c.id === currentClientId);
@@ -808,6 +962,7 @@
     saveClients();
     renderTransactions(client);
     updateTotalDebtDisplay(client);
+    hideModal("addTransactionClient");
     form.reset();
   });
 
@@ -821,38 +976,40 @@
     if (client) renderTransactions(client);
   });
 
-  // تصدير CSV
+  // تصدير CSV (مع النافذة المنبثقة الجديدة)
   document.getElementById("btn-export-csv").onclick = () => {
-    const client = clients.find(c => c.id === currentClientId);
-    if (!client) return;
-    const fromDate = document.getElementById("filter-from-date").value;
-    const toDate = document.getElementById("filter-to-date").value;
-
-    let filteredTransactions = client.transactions || [];
-    if(fromDate) filteredTransactions = filteredTransactions.filter(t => t.date >= fromDate);
-    if(toDate) filteredTransactions = filteredTransactions.filter(t => t.date <= toDate);
-
-    let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "\ufeff";
-    csvContent += "التاريخ,الوصف,النوع,المبلغ,ملاحظات\n";
-    filteredTransactions.forEach(t => {
-      const row = [
-        t.date,
-        `"${t.description.replace(/"/g, '""')}"`,
-        t.type === "purchase" ? "شراء (دين)" : "دفع",
-        t.amount.toFixed(2),
-        `"${t.notes.replace(/"/g, '""') || ""}"`
-      ].join(",");
-      csvContent += row + "\n";
+    confirmModal(`هل أنت متأكد من تصدير البيانات؟`, () => {
+      const client = clients.find(c => c.id === currentClientId);
+      if (!client) return;
+      const fromDate = document.getElementById("filter-from-date").value;
+      const toDate = document.getElementById("filter-to-date").value;
+  
+      let filteredTransactions = client.transactions || [];
+      if(fromDate) filteredTransactions = filteredTransactions.filter(t => t.date >= fromDate);
+      if(toDate) filteredTransactions = filteredTransactions.filter(t => t.date <= toDate);
+  
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "\ufeff";
+      csvContent += "التاريخ,الوصف,النوع,المبلغ,ملاحظات\n";
+      filteredTransactions.forEach(t => {
+        const row = [
+          t.date,
+          `"${t.description.replace(/"/g, '""')}"`,
+          t.type === "purchase" ? "شراء (دين)" : "دفع",
+          t.amount.toFixed(2),
+          `"${t.notes.replace(/"/g, '""') || ""}"`
+        ].join(",");
+        csvContent += row + "\n";
+      });
+  
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `${client.name}_transactions_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     });
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${client.name}_transactions_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   // تعديل اسم العميل
@@ -900,7 +1057,7 @@
     showScreen("clients");
   };
 
-  // فتح وإغلاق النوافذ المنبثقة الجديدة
+  // فتح وإغلاق النوافذ المنبثقة
   document.getElementById("btn-to-about").onclick = () => {
     showModal("about");
   };
@@ -962,7 +1119,6 @@
       return;
     }
 
-    // Capture form data before showing the modal
     const desc = form.querySelector("#transaction-desc").value.trim();
     const amount = parseFloat(form.querySelector("#transaction-amount").value);
     const type = form.querySelector("#transaction-type").value;
