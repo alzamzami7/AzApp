@@ -334,7 +334,7 @@
   
   /* تفاصيل العميل - التعديلات الجديدة */
   .client-details-header {
-    background: var(--bg-color);
+    background: var(--card-bg);
     padding: 10px;
     position: sticky;
     top: 0;
@@ -342,15 +342,22 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius: 8px;
     margin-bottom: 20px;
-  }
-  .client-details-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
   }
+  .client-details-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+  }
   .client-details-controls h2 {
     font-size: 1.5rem;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
   }
   .client-details-controls button {
     background-color: transparent;
@@ -361,11 +368,13 @@
   .client-details-controls button:hover {
     background-color: var(--bg-color);
   }
+  
+  /* التعديل الجديد هنا */
   .date-filter-row {
     background: var(--card-bg);
-    padding: 10px;
+    padding: 8px 10px; /* تقليل حجم الشريط */
     position: sticky;
-    top: 60px; /* تحت الهيدر العلوي */
+    top: 60px;
     z-index: 98;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius: 8px;
@@ -376,17 +385,33 @@
   }
   .date-filter-row .filter-dates {
     flex-grow: 1;
-    margin-bottom: 0;
+    display: flex;
+    gap: 5px; /* تقليل المسافة بين الحقول */
     padding: 0;
+    margin: 0;
     background: none;
     box-shadow: none;
+  }
+  .date-filter-row .filter-dates > div {
+    flex: 1;
+    min-width: unset; /* لإلغاء الحد الأدنى للعرض */
+  }
+  .date-filter-row .filter-dates input {
+    padding: 8px; /* تقليل حجم حقول الإدخال */
+    font-size: 0.9rem; /* تصغير الخط */
+    margin: 0;
+  }
+  .date-filter-row .filter-dates label {
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+    margin-top: 0;
   }
   .date-filter-row #btn-add-transaction {
     background-color: var(--success-color);
     color: white;
-    font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
+    font-size: 1.2rem; /* تصغير أيقونة الزر */
+    width: 36px; /* تصغير حجم الزر */
+    height: 36px;
     border-radius: 50%;
     padding: 0;
     display: flex;
@@ -394,6 +419,7 @@
     align-items: center;
     box-shadow: var(--shadow-medium);
   }
+  
   .client-details-footer {
     background: var(--card-bg);
     padding: 10px;
@@ -429,7 +455,7 @@
   }
   @media (max-width: 600px) {
     .filter-dates {
-      flex-direction: column;
+      flex-direction: row; /* الحفاظ على السطر الواحد في الشاشات الصغيرة */
     }
     .transaction-item {
       grid-template-columns: 1fr 1fr;
@@ -450,6 +476,9 @@
     .clients-controls button, .client-details-controls button {
       font-size: 0.9rem;
       padding: 6px 10px;
+    }
+    .date-filter-row .filter-dates {
+      flex-wrap: wrap; /* السماح بالتفاف الحقول إذا كانت الشاشة صغيرة جداً */
     }
   }
 </style>
