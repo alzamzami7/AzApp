@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>نظام الفوترة وإدارة الديون</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+\1
+  <button id="theme-toggle" aria-label="تبديل السمة">الوضع الليلي</button>
+</header>
+<main>
+  <section id="login-screen" class="screen">
+    <div id="login-form">
+      <h2>تسجيل الدخول</h2>
+      <form id="auth-form">
+        <input type="email" id="email-input" placeholder="البريد الإلكتروني" required />
+        <input type="password" id="password-input" placeholder="كلمة المرور" required />
+        <button type="submit" class="submit-btn">تسجيل الدخول</button>
+        <button type="button" id="switch-to-register">ليس لديك حساب؟ قم بالتسجيل</button>
+      </form>
+      <div class="whatsapp-message">
+        <p>لتفعيل حسابك بعد التسجيل، يرجى التواصل عبر واتساب على الرقم:</p>
+        <p><a href="https://wa.me/967730102760" target="_blank">730102760</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="register-screen" class="screen">
+    <div id="register-form">
+      <h2>إنشاء حساب جديد</h2>
+      <form id="register-auth-form">
+        <input type="email" id="register-email-input" placeholder="البريد الإلكتروني" required />
+        <input type="password" id="register-password-input" placeholder="كلمة المرور" required />
+        <label for="user-notes">ملاحظات (اختياري)</label>
+        <textarea id="user-notes" rows="3" placeholder="عرّف عن نفسك لتسهيل عملية الموافقة"></textarea>
+        <button type="submit" class="submit-btn">إنشاء الحساب</button>
+        <button type="button" id="switch-to-login">لدي حساب بالفعل</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="admin-screen" class="screen">
+    <div class="admin-panel-header">
+      <h2>لوحة تحكم المسؤول</h2>
+      <div class="admin-stats">
+        <div class="admin-stat-card">
+          <h4>إجمالي المستخدمين</h4>
+          <span class="count" id="total-users-count">0</span>
+        </div>
+        <div class="admin-stat-card">
+          <h4>قيد المراجعة</h4>
+          <span class="count" id="pending-users-count">0</span>
+        </div>
+        <div class="admin-stat-card">
+          <h4>موافق عليهم</h4>
+          <span class="count" id="approved-users-count">0</span>
+        </div>
+        <div class="admin-stat-card">
+          <h4>منتهي الصلاحية</h4>
+          <span class="count" id="expired-users-count">0</span>
+        </div>
+      </div>
+      <div id="pending-users-notification" class="admin-notifications hidden">
+          يوجد مستخدمون جدد في انتظار المراجعة. <a href="#" id="link-to-pending">عرض</a>
+      </div>
+      <div class="admin-filters">
+        <input type="text" id="search-user-input" placeholder="ابحث عن مستخدم..." />
+        <div class="filter-btn-group">
+          <button data-filter="all" class="active">الكل</button>
+          <button data-filter="pending">قيد المراجعة</button>
+          <button data-filter="approved">موافق عليهم</button>
+          <button data-filter="expired">منتهي الصلاحية</button>
+        </div>
+      </div>
+    </div>
+    <ul id="users-list-container" class="admin-users-list"></ul>
+  </section>
+
+  <section id="user-screen" class="screen">
+    <h2>إضافة معاملة جديدة</h2>
+    <form id="add-transaction-form">
+      <div class="form-group">
+        <label for="transaction-client" class="required">اسم العميل</label>
+        <input type="text" id="transaction-client" list="clients-datalist" autocomplete="off" placeholder="ابدأ بالكتابة للاقتراحات" required />
+        <datalist id="clients-datalist"></datalist>
+      </div>
+      <div class="form-group">
+        <label for="transaction-desc" class="required">وصف المعاملة</label>
+        <input type="text" id="transaction-desc" placeholder="مثلاً: 2 كجم أرز" required />
+      </div>
+      <div class="form-group">
+        <label for="transaction-amount" class="required">المبلغ</label>
+        <input type="number" id="transaction-amount" step="0.01" min="0.01" placeholder="مثلاً: 150.00" required />
+      </div>
+      <div class="form-group">
+        <label>نوع المعاملة</label>
+        <select id="transaction-type" required>
+          <option value="purchase">شراء (دين)</option>
+          <option value="payment">دفع</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="transaction-notes">ملاحظات (اختياري)</label>
+        <textarea id="transaction-notes" rows="2" placeholder="أي ملاحظات إضافية"></textarea>
+      </div>
+      <button type="submit" class="submit-btn">إرسال المعاملة</button>
+    </form>
+    <div class="btn-group-main">
+      <button id="btn-to-clients" class="secondary-btn">قائمة العملاء</button>
+    </div>
+  </section>
+
+  <section id="clients-screen" class="screen">
+    <div class="clients-header">
+      <div class="clients-controls">
+        <button id="btn-back-to-home-from-clients" class="secondary-btn">
+          <span class="icon-btn">←</span> عودة
+        </button>
+        <h2>قائمة العملاء</h2>
+        <button id="btn-add-client" class="secondary-btn">
+          <span class="icon-btn">+</span> إضافة
+        </button>
+      </div>
+      <input type="text" id="search-client-input" placeholder="ابحث عن عميل..." autocomplete="off" />
+    </div>
+    <ul id="clients-list-container"></ul>
+  </section>
+  <section id="client-details-screen" class="screen">
+    <div class="client-details-header">
+      <div class="client-details-controls">
+        <button id="btn-back-to-clients-from-details">
+          <span class="icon-btn">←</span> عودة
+        </button>
+        <h2 id="client-details-name"></h2>
+        <button id="btn-edit-client-name">
+          <span class="icon-btn">✏️</span> تعديل
+        </button>
+      </div>
+    </div>
+    <div class="date-filter-row">
+      <div class="filter-dates">
+        <div>
+          <label for="filter-from-date">من تاريخ</label>
+          <input type="date" id="filter-from-date" />
+        </div>
+        <div>
+          <label for="filter-to-date">إلى تاريخ</label>
+          <input type="date" id="filter-to-date" />
+        </div>
+      </div>
+      <button id="btn-add-transaction">+</button>
+    </div>
+    <ul id="transactions-list"></ul>
+    <div class="client-details-footer">
+      <div class="total-debt-display" id="total-debt-display"></div>
+      <button id="btn-export-csv">
+        <span class="icon-btn">⬇️</span>
+      </button>
+    </div>
+  </section>
+</main>
+<div class="modal-overlay" id="add-client-modal">
+  <div class="modal-box">
+    <h3>إضافة عميل جديد</h3>
+    <form id="add-client-form">
+      <div class="form-group">
+        <label for="new-client-name" class="required">اسم العميل</label>
+        <input type="text" id="new-client-name" autocomplete="off" required />
+      </div>
+      <div class="form-group">
+        <label for="new-client-initial-debt">دين مبدئي (اختياري)</label>
+        <input type="number" id="new-client-initial-debt" step="0.01" min="0" placeholder="مثلاً: 500.00" />
+      </div>
+      <div class="form-group">
+        <label for="new-client-initial-desc">وصف الدين المبدئي</label>
+        <input type="text" id="new-client-initial-desc" placeholder="مثلاً: دين قرض من 1 يناير" />
+      </div>
+      <div class="modal-buttons">
+        <button type="submit">إضافة العميل</button>
+        <button type="button" class="cancel-btn" id="btn-cancel-add-client">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="modal-overlay" id="edit-client-name-modal">
+  <div class="modal-box">
+    <h3>تعديل اسم العميل</h3>
+    <form id="edit-client-name-form">
+      <div class="form-group">
+        <label for="edit-client-name-input" class="required">الاسم الجديد</label>
+        <input type="text" id="edit-client-name-input" autocomplete="off" required />
+      </div>
+      <div class="modal-buttons">
+        <button type="submit">حفظ التعديل</button>
+        <button type="button" class="cancel-btn" id="btn-cancel-edit-client">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="modal-overlay" id="about-modal">
+  <div class="modal-box">
+    <h3>عن التطبيق</h3>
+    <p>هذا التطبيق هو نظام بسيط لإدارة الفواتير والديون، مصمم لتبسيط عملية تتبع المعاملات المالية.</p>
+    <div class="modal-buttons">
+      <button class="confirm-btn" id="btn-close-about">إغلاق</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal-box">
+    <div class="modal-message"></div>
+    <div class="modal-buttons">
+      <button class="confirm-btn">نعم</button>
+      <button class="cancel-btn">إلغاء</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="edit-transaction-modal">
+  <div class="modal-box">
+    <h3 style="margin-top: 0;">تعديل المعاملة</h3>
+    <form id="edit-transaction-form">
+      <div class="form-group">
+        <label for="edit-tx-desc" class="required">وصف المعاملة</label>
+        <input type="text" id="edit-tx-desc" required />
+      </div>
+      <div class="form-group">
+        <label for="edit-tx-amount" class="required">المبلغ</label>
+        <input type="number" id="edit-tx-amount" step="0.01" min="0.01" required />
+      </div>
+      <div class="form-group">
+        <label for="edit-tx-type">نوع المعاملة</label>
+        <select id="edit-tx-type" required>
+          <option value="purchase">شراء (دين)</option>
+          <option value="payment">دفع</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="edit-tx-notes">ملاحظات</label>
+        <textarea id="edit-tx-notes" rows="2"></textarea>
+      </div>
+      <div class="modal-buttons">
+        <button type="submit" class="confirm-btn">حفظ</button>
+        <button type="button" class="cancel-btn" id="cancel-edit-tx">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="modal-overlay" id="add-transaction-client-modal">
+  <div class="modal-box">
+    <h3>إضافة معاملة جديدة</h3>
+    <form id="add-transaction-form-client">
+      <div class="form-group">
+        <label for="transaction-desc-client" class="required">وصف المعاملة</label>
+        <input type="text" id="transaction-desc-client" placeholder="مثلاً: 1 كجم سكر" required />
+      </div>
+      <div class="form-group">
+        <label for="transaction-amount-client" class="required">المبلغ</label>
+        <input type="number" id="transaction-amount-client" step="0.01" min="0.01" placeholder="مثلاً: 200.00" required />
+      </div>
+      <div class="form-group">
+        <label>نوع المعاملة</label>
+        <select id="transaction-type-client" required>
+          <option value="purchase">شراء (دين)</option>
+          <option value="payment">دفع</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="transaction-notes-client">ملاحظات (اختياري)</label>
+        <textarea id="transaction-notes-client" rows="2" placeholder="أي ملاحظات إضافية"></textarea>
+      </div>
+      <div class="modal-buttons">
+        <button type="submit">إضافة معاملة</button>
+        <button type="button" class="cancel-btn" id="cancel-add-tx-client">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="modal-overlay" id="message-modal">
+  <div class="modal-box">
+    <div class="modal-message"></div>
+    <div class="modal-buttons">
+      <button class="confirm-btn">حسنًا</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="user-details-modal">
+  <div class="modal-box">
+    <h3 id="user-details-title"></h3>
+    <div class="user-info-details">
+      <div><span>البريد الإلكتروني:</span> <span id="user-details-email"></span></div>
+      <div><span>تاريخ الإنشاء:</span> <span id="user-details-creation-date"></span></div>
+      <div><span>حالة الحساب:</span> <span id="user-details-status"></span></div>
+      <div><span>تاريخ انتهاء الصلاحية:</span> <span id="user-details-expiry-date"></span></div>
+      <div><span>ملاحظات المستخدم:</span> <span id="user-details-notes"></span></div>
+    </div>
+    <div class="user-details-actions">
+      <button id="btn-approve-user" class="submit-btn hidden">تفعيل المستخدم</button>
+      <button id="btn-update-user-expiry" class="secondary-btn hidden">تعديل تاريخ الانتهاء</button>
+      <button id="btn-restrict-user" class="secondary-btn hidden">تقييد المستخدم</button>
+      <button id="btn-delete-user" class="secondary-btn hidden">حذف المستخدم</button>
+      <button class="cancel-btn" id="btn-close-user-details">إغلاق</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="set-expiry-modal">
+  <div class="modal-box">
+    <h3>تحديد تاريخ انتهاء الصلاحية</h3>
+    <form id="set-expiry-form">
+      <div class="form-group">
+        <label for="expiry-date-input" class="required">تاريخ الانتهاء</label>
+        <input type="date" id="expiry-date-input" required />
+      </div>
+      <div class="modal-buttons">
+        <button type="submit">حفظ</button>
+        <button type="button" class="cancel-btn" id="btn-cancel-expiry">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <button id="btn-to-about">?</button>
+  <p>تم تطويره بواسطة - عبدالله الزمزمي</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>
