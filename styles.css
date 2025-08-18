@@ -1,0 +1,43 @@
+/* متغيرات الألوان */
+:root {
+    --primary-color: #004aad;
+    --secondary-color: #003080;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --text-color: #222;
+    --bg-color: #f0f2f5;
+    --card-bg: white;
+}
+
+/* النمط العام */
+body {
+    font-family: "Cairo", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--bg-color);
+    color: var(--text-color);
+    direction: rtl;
+    transition: all 0.3s ease;
+}
+
+/* الأزرار المحسنة */
+button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+button i {
+    font-size: 1.1em;
+}
+
+/* باقي الأنماط كما هي مع تحسينات */
